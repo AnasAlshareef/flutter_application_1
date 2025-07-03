@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
-
 import 'Pages/backgroud_page.dart';
 import 'Pages/onboardin_page1.dart';
+import 'Pages/Sign_up_Login_page.dart';
 
 
 void main() {
   runApp(const MyApp());
 }
 
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  
 
   @override
   Widget build(BuildContext context) {
