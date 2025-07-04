@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 
-
 class CustomScaffold extends StatelessWidget {
   const CustomScaffold({
     super.key,
@@ -29,59 +28,11 @@ class CustomScaffold extends StatelessWidget {
         ),
       ),
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         backgroundColor: Colors.transparent,
         appBar: appBar,
         body: body,
         bottomNavigationBar: bottomNavigationBar,
-      ),
-    );
-  }
-}
-
-class RightAlignedTextBlock extends StatelessWidget {
-  final String title;
-  final String? subtitle; // Make subtitle optional
-  final EdgeInsetsGeometry padding;
-
-  const RightAlignedTextBlock({
-    super.key,
-    required this.title,
-    this.subtitle, // No longer required
-    required this.padding,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.centerRight,
-      child: Padding(
-        padding: padding,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Text(
-              title,
-              textAlign: TextAlign.right,
-              style: GoogleFonts.cairo(
-                fontSize: 31,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-            if (subtitle != null) ...[
-              const SizedBox(height: 30),
-              Text(
-                subtitle!,
-                textAlign: TextAlign.right,
-                style: GoogleFonts.almarai(
-                  fontSize: 18,
-                  color: Colors.white,
-                ),
-              ),
-            ],
-          ],
-        ),
       ),
     );
   }
@@ -127,31 +78,34 @@ class CustomButton extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
               ),
             ),
-            child: icon == null
-                ? Text(
-                    text,
-                    style: GoogleFonts.almarai(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  )
-                : Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      icon!,                 // Icon first
-                      const SizedBox(width: 10),  // Space between icon and text
-                      Text(
-                        text,
-                        style: GoogleFonts.almarai(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
+            child:
+                icon == null
+                    ? Text(
+                      text,
+                      style: GoogleFonts.almarai(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
                       ),
-                    ],           
-                  ),
+                    )
+                    : Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        icon!, // Icon first
+                        const SizedBox(
+                          width: 10,
+                        ), // Space between icon and text
+                        Text(
+                          text,
+                          style: GoogleFonts.almarai(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ],
+                    ),
           ),
         ),
       ),
@@ -176,7 +130,7 @@ class FlexibleTextBlock extends StatelessWidget {
   final Color titleColor;
   final Color subtitleColor;
   final CrossAxisAlignment crossAxisAlignment;
-  final TextAlign? textAlign;  // New optional textAlign param
+  final TextAlign? textAlign; // New optional textAlign param
 
   const FlexibleTextBlock({
     super.key,
@@ -195,7 +149,7 @@ class FlexibleTextBlock extends StatelessWidget {
     this.titleColor = Colors.white,
     this.subtitleColor = Colors.white,
     this.crossAxisAlignment = CrossAxisAlignment.start,
-    this.textAlign,  // optional
+    this.textAlign, // optional
   });
 
   @override
@@ -248,6 +202,421 @@ class FlexibleTextBlock extends StatelessWidget {
 }
 
 
+class PositionedArrowButton extends StatelessWidget {
+  final double? top;
+  final double? bottom;
+  final double? left;
+  final double? right;
+  final VoidCallback onTap;
+  final double iconSize;
+  final Color color;
+
+  const PositionedArrowButton({
+    super.key,
+    this.top,
+    this.bottom,
+    this.left,
+    this.right,
+    required this.onTap,
+    this.iconSize = 30,
+    this.color = Colors.white,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      top: top,
+      bottom: bottom,
+      left: left,
+      right: right,
+      child: GestureDetector(
+        onTap: onTap,
+        child: Icon(Icons.arrow_forward, size: iconSize, color: color),
+      ),
+    );
+  }
+}
+
+
+class CustomEmailTextBox extends StatefulWidget {
+  final double? top;
+  final double? bottom;
+  final double? left;
+  final double? right;
+  final Color boxColor;
+  final Color textColor;
+  final double fontSize;
+  final TextEditingController controller;
+  final double? width;
+  final double? height;
+  final TextStyle? textStyle;
+
+  const CustomEmailTextBox({
+    super.key,
+    required this.controller,
+    this.top,
+    this.bottom,
+    this.left,
+    this.right,
+    this.boxColor = Colors.white,
+    this.textColor = Colors.black,
+    this.fontSize = 16,
+    this.width,
+    this.height,
+    this.textStyle,
+  });
+
+  @override
+  State<CustomEmailTextBox> createState() => _CustomEmailTextBoxState();
+}
+
+
+class _CustomEmailTextBoxState extends State<CustomEmailTextBox> {
+  @override
+  void initState() {
+    super.initState();
+    widget.controller.addListener(_refresh);
+  }
+
+  void _refresh() => setState(() {});
+
+  @override
+  void dispose() {
+    widget.controller.removeListener(_refresh);
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      top: widget.top,
+      bottom: widget.bottom,
+      left: widget.left,
+      right: widget.right,
+      child: Container(
+        width: widget.width,
+        height: widget.height,
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        decoration: BoxDecoration(
+          color: widget.boxColor,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Stack(
+          children: [
+            // Custom hint text (only visible when input is empty)
+            if (widget.controller.text.isEmpty)
+              Positioned(
+                right: 4,
+                top: 12,
+                child: Text(
+                  'البريد الإلكتروني',
+                  style: (widget.textStyle ?? const TextStyle()).copyWith(
+                    fontSize: widget.fontSize,
+                    color: Colors.grey,
+                  ),
+                  textDirection: TextDirection.rtl,
+                ),
+              ),
+            TextField(
+              controller: widget.controller,
+              keyboardType: TextInputType.emailAddress,
+              textAlign: TextAlign.left,
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+                hintText: '',
+                contentPadding: EdgeInsets.symmetric(
+                  vertical: 12,
+                  horizontal: 0, // avoid negative padding
+                ),
+              ),
+              style: (widget.textStyle ?? const TextStyle()).copyWith(
+                fontSize: widget.fontSize,
+                color: widget.textColor,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+
+
+class CustomUsernameTextBox extends StatefulWidget {
+  final double? top;
+  final double? bottom;
+  final double? left;
+  final double? right;
+  final Color boxColor;
+  final Color textColor;
+  final double fontSize;
+  final TextEditingController controller;
+  final double? width;
+  final double? height;
+  final TextStyle? textStyle;
+
+  const CustomUsernameTextBox({
+    super.key,
+    required this.controller,
+    this.top,
+    this.bottom,
+    this.left,
+    this.right,
+    this.boxColor = Colors.white,
+    this.textColor = Colors.black,
+    this.fontSize = 16,
+    this.width,
+    this.height,
+    this.textStyle,
+  });
+
+  @override
+  State<CustomUsernameTextBox> createState() => _CustomUsernameTextBoxState();
+}
+
+class _CustomUsernameTextBoxState extends State<CustomUsernameTextBox> {
+  @override
+  void initState() {
+    super.initState();
+    widget.controller.addListener(_refresh);
+  }
+
+  void _refresh() => setState(() {});
+
+  @override
+  void dispose() {
+    widget.controller.removeListener(_refresh);
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      top: widget.top,
+      bottom: widget.bottom,
+      left: widget.left,
+      right: widget.right,
+      child: Container(
+        width: widget.width,
+        height: widget.height,
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        decoration: BoxDecoration(
+          color: widget.boxColor,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Stack(
+          children: [
+            // Custom hint text (only visible when input is empty)
+            if (widget.controller.text.isEmpty)
+              Positioned(
+                right: 4,
+                top: 12,
+                child: Text(
+                  'الأسم الكامل',
+                  style: (widget.textStyle ?? const TextStyle()).copyWith(
+                    fontSize: widget.fontSize,
+                    color: Colors.grey,
+                  ),
+                  textDirection: TextDirection.rtl,
+                ),
+              ),
+            TextField(
+              controller: widget.controller,
+              keyboardType: TextInputType.name,
+              textAlign: TextAlign.left,
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+                hintText: '',
+                contentPadding: EdgeInsets.symmetric(
+                  vertical: 12,
+                  horizontal: 0,
+                ),
+              ),
+              style: (widget.textStyle ?? const TextStyle()).copyWith(
+                fontSize: widget.fontSize,
+                color: widget.textColor,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+
+
+
+
+enum IconPosition { left, right }
+
+
+
+class CustomPasswordTextBox extends StatefulWidget {
+  final double? top;
+  final double? bottom;
+  final double? left;
+  final double? right;
+  final Color boxColor;
+  final Color textColor;
+  final double height;
+  final double width;
+  final IconData visibleIcon;
+  final IconData hiddenIcon;
+  final double iconSize;
+  final Color iconColor;
+  final TextEditingController controller;
+  final VoidCallback onToggleVisibility;
+  final Alignment hintAlignment;
+  final EdgeInsets hintPadding;
+  final TextAlign inputTextAlign;
+  final EdgeInsets inputPadding;
+  final TextStyle? textStyle;
+  final String hintText;
+  final TextDirection textDirection;
+  final Color borderColor;
+  final double borderWidth;
+  final IconPosition iconPosition;
+  final bool initialObscure;
+
+  const CustomPasswordTextBox({
+    super.key,
+    required this.controller,
+    required this.onToggleVisibility,
+    this.top,
+    this.bottom,
+    this.left,
+    this.right,
+    this.boxColor = Colors.white,
+    this.textColor = Colors.black,
+    this.height = 50,
+    this.width = 300,
+    this.visibleIcon = Icons.visibility,
+    this.hiddenIcon = Icons.visibility_off,
+    this.iconSize = 24,
+    this.iconColor = Colors.grey,
+    this.hintAlignment = Alignment.centerRight,
+    this.hintPadding = const EdgeInsets.only(right: 36),
+    this.inputTextAlign = TextAlign.left,
+    this.inputPadding = const EdgeInsets.symmetric(vertical: 14, horizontal: 0),
+    this.textStyle,
+    this.hintText = 'كلمة المرور',
+    this.textDirection = TextDirection.rtl,
+    this.borderColor = Colors.transparent,
+    this.borderWidth = 0,
+    this.iconPosition = IconPosition.right,
+    this.initialObscure = true,
+  });
+
+  @override
+  State<CustomPasswordTextBox> createState() => _CustomPasswordTextBoxState();
+}
+
+class _CustomPasswordTextBoxState extends State<CustomPasswordTextBox> {
+  late bool _obscureText;
+
+  @override
+  void initState() {
+    super.initState();
+    _obscureText = widget.initialObscure;
+    widget.controller.addListener(() => setState(() {}));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final effectiveTextStyle = widget.textStyle ??
+        TextStyle(
+          fontSize: 16,
+          color: widget.textColor,
+        );
+
+    final iconWidget = GestureDetector(
+      onTap: () {
+        setState(() {
+          _obscureText = !_obscureText;
+        });
+        widget.onToggleVisibility();
+      },
+      child: Icon(
+        _obscureText ? widget.hiddenIcon : widget.visibleIcon,
+        size: widget.iconSize,
+        color: widget.iconColor,
+        semanticLabel: _obscureText ? 'Show password' : 'Hide password',
+      ),
+    );
+
+    return Positioned(
+      top: widget.top,
+      bottom: widget.bottom,
+      left: widget.left,
+      right: widget.right,
+      child: Container(
+        height: widget.height,
+        width: widget.width,
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        decoration: BoxDecoration(
+          color: widget.boxColor,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: widget.borderColor, width: widget.borderWidth),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 4,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Directionality(
+          textDirection: widget.textDirection,
+          child: Stack(
+            alignment: Alignment.centerRight,
+            children: [
+              if (widget.controller.text.isEmpty)
+                Positioned.fill(
+                  child: Padding(
+                    padding: widget.hintPadding,
+                    child: Align(
+                      alignment: widget.hintAlignment,
+                      child: Text(
+                        widget.hintText,
+                        style: effectiveTextStyle.copyWith(color: Colors.grey),
+                        textAlign: TextAlign.right,
+                      ),
+                    ),
+                  ),
+                ),
+              Row(
+                children: [
+                  if (widget.iconPosition == IconPosition.left) iconWidget,
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: TextField(
+                      controller: widget.controller,
+                      obscureText: _obscureText,
+                      textAlign: widget.inputTextAlign,
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        hintText: '',
+                        contentPadding: widget.inputPadding,
+                      ),
+                      style: effectiveTextStyle,
+                      cursorColor: widget.iconColor,
+                    ),
+                  ),
+                  if (widget.iconPosition == IconPosition.right) iconWidget,
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
+
 
 
 void navigateToNextPage(BuildContext context, Widget targetPage) {
@@ -272,4 +641,3 @@ void navigateToNextPage(BuildContext context, Widget targetPage) {
     ),
   );
 }
-
