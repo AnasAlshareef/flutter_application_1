@@ -3,7 +3,7 @@ import 'Pages/backgroud_page.dart';
 import 'Pages/onboardin_page1.dart';
 import 'Pages/Sign_Up_page.dart';
 import 'Pages/Sign_In_page.dart';
-
+import 'Pages/Sign_up_Login_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner:  false,
-      home: SignInPage() );
+      home: SignUpLoginPage() );
   }
 }
 
