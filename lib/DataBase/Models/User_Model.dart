@@ -1,18 +1,18 @@
 class UserModel {
-  int? id;
-  String username;
-  String passwordHash;
-  String? email;
-  double balance;
-  String? createdAt;
+  final int? id;
+  final String username;
+  final String passwordHash;
+  final String email; // Make non-nullable
+  final double balance;
+  final String createdAt; // Make non-nullable
 
   UserModel({
     this.id,
     required this.username,
     required this.passwordHash,
-    this.email,
+    required this.email,
     this.balance = 0.0,
-    this.createdAt,
+    required this.createdAt,
   });
 
   factory UserModel.fromMap(Map<String, dynamic> map) {

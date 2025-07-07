@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'Custom_Widgets.dart';
 import 'Sign_up_Login_page.dart';
+import 'Main_page.dart';
 import '../DataBase/DataBase_Helper.dart'; // Make sure to import your Cubit
 import '../Auth/Auth_Cudit.dart'; // Make sure to import DatabaseHelper
 
@@ -57,7 +58,7 @@ class _SignUpPageState extends State<SignUpPage> {
         return const ImagePopupOverlay(
           imagePath: 'assets/Create Email.png',
           titleText: 'تم انشاء حسابك بنجاح\n يمكنك الان تسجيل الدخول',
-          nextPage: SignUpLoginPage(),
+          nextPage: MainPageWrapper(),
         );
       },
       transitionBuilder:
@@ -167,17 +168,21 @@ class _SignUpPageState extends State<SignUpPage> {
                 );
               },
               text: 'Google',
-              alignment: const Alignment(0, 0.67),
-              padding: const EdgeInsets.symmetric(
-                horizontal: 25.0,
-                vertical: 0.0,
-              ),
               icon: const FaIcon(
                 FontAwesomeIcons.google,
                 color: Color(0xFF4285F4),
                 size: 24,
               ),
+              alignment: const Alignment(0, 0.67),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              height: 60,
+              width: 310,
               backgroundColor: Colors.white,
+              textStyle: GoogleFonts.almarai(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+              ),
             ),
 
             // Register button using AuthCubit
@@ -185,18 +190,23 @@ class _SignUpPageState extends State<SignUpPage> {
               onPressed: () {
                 final cubit = context.read<AuthCubit>();
                 cubit.registerUser(
-                  username: _usernameController.text,
-                  email: _emailController.text,
-                  password: _passwordController.text,
+                  username: _usernameController.text.trim(),
+                  email: _emailController.text.trim(),
+                  password: _passwordController.text.trim(),
                 );
               },
-              text: 'انشاء حساب',
-              alignment: const Alignment(0, 0.36),
-              padding: const EdgeInsets.symmetric(
-                horizontal: 25.0,
-                vertical: 0.0,
+              text: 'إنشاء حساب',
+              alignment: const Alignment(0, 0.36), // Vertical positioning
+              height: 55,
+              width: 310, // You can adjust or remove for full width
+              backgroundColor: const Color(0xFFB8FF01),
+              textStyle: GoogleFonts.almarai(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
               ),
             ),
+          
           ],
         ),
       ),
@@ -247,7 +257,7 @@ class ImagePopupOverlay extends StatelessWidget {
               ),
               CustomButton(
                 onPressed: () {
-                  navigateToNextPage(context, SignUpLoginPage());
+                  navigateToNextPage(context, nextPage);
                 },
                 text: 'الاستمرار',
                 alignment: const Alignment(0, 0.91),

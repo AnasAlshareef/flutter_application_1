@@ -19,41 +19,43 @@ class AuthCubit extends Cubit<AuthState> {
     this._saveUserName,
   ) : super(AuthInitial());
 
- Future<void> loginUser({
-  required String email,
-  required String password,
-}) async {
-  emit(AuthLoading());
-  try {
-    if (email.isEmpty || password.isEmpty) {
-      emit(AuthFailure('Email and password are required.'));
-      return;
+  Future<void> loginUser({
+    required String email,
+    required String password,
+  }) async {
+    emit(AuthLoading());
+    try {
+      if (email.isEmpty || password.isEmpty) {
+        emit(AuthFailure('Email and password are required.'));
+        return;
+      }
+
+      // Get user by email instead of username
+      final user = await _databaseHelper.getUserByEmail(email);
+
+      if (user == null) {
+        emit(AuthFailure('Invalid email or password.'));
+        return;
+      }
+
+      // Hash the input password using SHA256
+      final hashedInputPassword =
+          sha256.convert(utf8.encode(password)).toString();
+
+      // Compare stored hash with hashed input
+      if (user.passwordHash == hashedInputPassword) {
+        await _saveCredentials.saveCredentials(email, password);
+        await _saveUserName.saveUserName(
+          user.username,
+        ); // or user.email if you prefer
+        emit(AuthSuccess(user)); // Send the full user model
+      } else {
+        emit(AuthFailure('Invalid email or password.'));
+      }
+    } catch (e) {
+      emit(AuthFailure('Login error: ${e.toString()}'));
     }
-
-    // Get user by email instead of username
-    final user = await _databaseHelper.getUserByEmail(email);
-
-    if (user == null) {
-      emit(AuthFailure('Invalid email or password.'));
-      return;
-    }
-
-    // Hash the input password using SHA256
-    final hashedInputPassword = sha256.convert(utf8.encode(password)).toString();
-
-    // Compare stored hash with hashed input
-    if (user.passwordHash == hashedInputPassword) {
-      await _saveCredentials.saveCredentials(email, password);
-      await _saveUserName.saveUserName(user.username); // or user.email if you prefer
-      emit(AuthSuccess(user)); // Send the full user model
-    } else {
-      emit(AuthFailure('Invalid email or password.'));
-    }
-  } catch (e) {
-    emit(AuthFailure('Login error: ${e.toString()}'));
   }
-}
-
 
   Future<void> registerUser({
     required String username,
@@ -124,4 +126,29 @@ class AuthCubit extends Cubit<AuthState> {
       emit(AuthFailure('Logout error: ${e.toString()}'));
     }
   }
+
+  Future<void> refreshUser() async {
+    final currentState = state;
+
+    if (currentState is AuthSuccess) {
+      final user = await _databaseHelper.getUserByEmail(
+        currentState.user.email,
+      );
+
+      if (user != null) {
+        emit(AuthSuccess(user)); // Update state with fresh user data
+      } else {
+        emit(AuthFailure('Failed to refresh user data.'));
+      }
+    }
+  }
+
+  UserModel? get currentUser {
+    final currentState = state;
+    if (currentState is AuthSuccess) {
+      return currentState.user;
+    }
+    return null;
+  }
+  
 }

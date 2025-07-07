@@ -6,8 +6,6 @@ import 'Custom_Widgets.dart'; // Adjust the path to your actual location
 import 'Sign_Up_page.dart';
 import 'Sign_in_page.dart';
 
-
-
 class SignUpLoginPage extends StatefulWidget {
   const SignUpLoginPage({super.key});
 
@@ -28,8 +26,6 @@ class _SignUpLoginPageState extends State<SignUpLoginPage> {
             decoration: const BoxDecoration(color: Color(0xFF6026E2)),
           ),
 
-     
-
           FlexibleTextBlock(
             title: 'أختر طريقة تسجيل دخولك',
             top: 320,
@@ -40,28 +36,30 @@ class _SignUpLoginPageState extends State<SignUpLoginPage> {
             textAlign: TextAlign.center,
           ),
 
-
           CustomButton(
             onPressed: () {
               navigateToNextPage(context, SignInPageWrapper());
             },
             text: 'أستمر عن طريق البريد الألكتروني',
             alignment: const Alignment(0, 0.34),
-            padding: const EdgeInsets.symmetric(
-              horizontal: 21.0,
-              vertical: 0.0,
+            width: 310,
+            height: 60,
+            backgroundColor: const Color(0xFFB8FF01),
+            textStyle: GoogleFonts.almarai(
+              fontSize: 17,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
             ),
           ),
 
 
-          
           CustomButton(
             onPressed: () {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   content: Text(
                     'هذه الميزة غير متوفرة حاليا',
-                    textAlign: TextAlign.center, // Center the text
+                    textAlign: TextAlign.center,
                   ),
                   duration: Duration(seconds: 2),
                   behavior: SnackBarBehavior.floating,
@@ -71,21 +69,22 @@ class _SignUpLoginPageState extends State<SignUpLoginPage> {
             },
             text: 'Google',
             alignment: const Alignment(0, 0.72),
-            padding: const EdgeInsets.symmetric(
-              horizontal: 21.0,
-              vertical: 0.0,
-            ),
+            width: 310,
+            height: 60,
             icon: const FaIcon(
               FontAwesomeIcons.google,
               color: Color(0xFF4285F4),
               size: 24,
             ),
             backgroundColor: Colors.white,
+            textStyle: GoogleFonts.almarai(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            ),
           ),
 
           // Add your bottom centered clickable text here
-         
-         
           Positioned(
             bottom: 30,
             left: 0,

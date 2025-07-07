@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'Pages/backgroud_page.dart';
-import 'Pages/onboardin_page1.dart';
+import 'package:flutter_application_1/Pages/Sign_in_page.dart';
+import 'Pages/Backgroud_page.dart';
+import 'Pages/Onboardin_page1.dart';
 import 'Pages/Sign_Up_page.dart';
 import 'Pages/Sign_In_page.dart';
 import 'Pages/Sign_up_Login_page.dart';
+import 'Pages/Main_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -18,7 +20,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner:  false,
-      home: SignUpLoginPage() );
+      home: MainPageWrapper() );
   }
 }
 
@@ -61,7 +63,7 @@ class _MyPageViewScreenState extends State<MyPageViewScreen> {
         controller: _pageController,
         physics: NeverScrollableScrollPhysics(), // disables user swiping
         children: [
-          LogoTransitionScreen(),  // Your first page
+          BackgroudPage(),  // Your first page
           OnboardinPage1(),        // Your second page
         ],
       ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
+import 'package:flutter/services.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 
 class CustomScaffold extends StatelessWidget {
   const CustomScaffold({
@@ -38,81 +39,86 @@ class CustomScaffold extends StatelessWidget {
   }
 }
 
-
 class CustomButton extends StatelessWidget {
   final VoidCallback onPressed;
   final String text;
-  final Alignment alignment;
-  final EdgeInsetsGeometry padding;
 
-  // Optional parameters
+  // Optional customization
+  final AlignmentGeometry alignment;
+  final EdgeInsetsGeometry margin;
+  final EdgeInsetsGeometry padding;
   final double? width;
+  final double? height;
   final Widget? icon;
   final Color? backgroundColor;
+  final TextStyle? textStyle;
 
   const CustomButton({
     super.key,
     required this.onPressed,
     required this.text,
-    required this.alignment,
-    required this.padding,
+    this.alignment = Alignment.center,
+    this.margin = EdgeInsets.zero,
+    this.padding = const EdgeInsets.symmetric(horizontal: 16),
     this.width,
+    this.height = 50,
     this.icon,
     this.backgroundColor,
+    this.textStyle,
   });
 
   @override
   Widget build(BuildContext context) {
     return Align(
       alignment: alignment,
-      child: Padding(
-        padding: padding,
-        child: SizedBox(
-          width: width ?? double.infinity, // Use provided width or default
-          child: ElevatedButton(
-            onPressed: onPressed,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: backgroundColor ?? const Color(0xFFB8FF01),
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
+      child: Container(
+        margin: margin,
+        width: width ?? double.infinity,
+        height: height,
+        child: ElevatedButton(
+          onPressed: onPressed,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: backgroundColor ?? const Color(0xFFB8FF01),
+            padding: padding,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
             ),
-            child:
-                icon == null
-                    ? Text(
-                      text,
-                      style: GoogleFonts.almarai(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
-                    )
-                    : Row(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        icon!, // Icon first
-                        const SizedBox(
-                          width: 10,
-                        ), // Space between icon and text
-                        Text(
-                          text,
-                          style: GoogleFonts.almarai(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ],
-                    ),
           ),
+          child:
+              icon == null
+                  ? Text(
+                    text,
+                    style:
+                        textStyle ??
+                        GoogleFonts.almarai(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                  )
+                  : Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      icon!,
+                      const SizedBox(width: 10),
+                      Text(
+                        text,
+                        style:
+                            textStyle ??
+                            GoogleFonts.almarai(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                      ),
+                    ],
+                  ),
         ),
       ),
     );
   }
 }
-
 
 class FlexibleTextBlock extends StatelessWidget {
   final String title;
@@ -201,7 +207,6 @@ class FlexibleTextBlock extends StatelessWidget {
   }
 }
 
-
 class PositionedArrowButton extends StatelessWidget {
   final double? top;
   final double? bottom;
@@ -237,7 +242,6 @@ class PositionedArrowButton extends StatelessWidget {
   }
 }
 
-
 class CustomEmailTextBox extends StatefulWidget {
   final double? top;
   final double? bottom;
@@ -269,7 +273,6 @@ class CustomEmailTextBox extends StatefulWidget {
   @override
   State<CustomEmailTextBox> createState() => _CustomEmailTextBoxState();
 }
-
 
 class _CustomEmailTextBoxState extends State<CustomEmailTextBox> {
   @override
@@ -340,8 +343,6 @@ class _CustomEmailTextBoxState extends State<CustomEmailTextBox> {
     );
   }
 }
-
-
 
 class CustomUsernameTextBox extends StatefulWidget {
   final double? top;
@@ -445,13 +446,262 @@ class _CustomUsernameTextBoxState extends State<CustomUsernameTextBox> {
   }
 }
 
+class CustomNumberTextBox extends StatefulWidget {
+  final double? top;
+  final double? bottom;
+  final double? left;
+  final double? right;
+  final Color boxColor;
+  final Color textColor;
+  final double fontSize;
+  final TextEditingController controller;
+  final double? width;
+  final double? height;
+  final TextStyle? textStyle;
+  final bool allowDecimal;
+  final Color borderColor;
+
+  const CustomNumberTextBox({
+    super.key,
+    required this.controller,
+    this.top,
+    this.bottom,
+    this.left,
+    this.right,
+    this.boxColor = Colors.white,
+    this.textColor = Colors.black,
+    this.fontSize = 16,
+    this.width,
+    this.height,
+    this.textStyle,
+    this.allowDecimal = false,
+    this.borderColor = Colors.transparent,
+  });
+
+  @override
+  State<CustomNumberTextBox> createState() => _CustomNumberTextBoxState();
+}
+
+class _CustomNumberTextBoxState extends State<CustomNumberTextBox> {
+  @override
+  void initState() {
+    super.initState();
+    widget.controller.addListener(_refresh);
+  }
+
+  void _refresh() => setState(() {});
+
+  @override
+  void dispose() {
+    widget.controller.removeListener(_refresh);
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      top: widget.top,
+      bottom: widget.bottom,
+      left: widget.left,
+      right: widget.right,
+      child: Container(
+        width: widget.width,
+        height: widget.height,
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        decoration: BoxDecoration(
+          color: widget.boxColor,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            color: widget.borderColor,
+            width: 2, // Default border width
+          ),
+        ),
+        child: Stack(
+          children: [
+            if (widget.controller.text.isEmpty)
+              Positioned(
+                right: 2,
+                top: 8,
+                child: Text(
+                  'رقم فقط',
+                  style: (widget.textStyle ?? const TextStyle()).copyWith(
+                    fontSize: widget.fontSize,
+                    color: const Color.fromARGB(255, 108, 108, 108),
+                  ),
+                  textDirection: TextDirection.rtl,
+                ),
+              ),
+            TextField(
+              controller: widget.controller,
+              keyboardType:
+                  widget.allowDecimal
+                      ? const TextInputType.numberWithOptions(decimal: true)
+                      : TextInputType.number,
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(
+                  widget.allowDecimal
+                      ? RegExp(r'^\d*\.?\d{0,3}')
+                      : RegExp(r'^\d+'),
+                ),
+              ],
+              textAlign: TextAlign.left,
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+                hintText: '',
+                contentPadding: EdgeInsets.symmetric(
+                  vertical: 12,
+                  horizontal: 0,
+                ),
+              ),
+              style: (widget.textStyle ?? const TextStyle()).copyWith(
+                fontSize: widget.fontSize,
+                color: widget.textColor,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class CustomDropdownBox extends StatefulWidget {
+  final double? top;
+  final double? bottom;
+  final double? left;
+  final double? right;
+  final double? width;
+  final double? height;
+  final List<String> items;
+  final String? selectedValue;
+  final Color boxColor;
+  final Color textColor;
+  final double fontSize;
+  final TextStyle? textStyle;
+  final ValueChanged<String?> onChanged;
+  final TextDirection textDirection;
+  final Color borderColor;
+
+  const CustomDropdownBox({
+    super.key,
+    required this.items,
+    required this.onChanged,
+    this.selectedValue,
+    this.top,
+    this.bottom,
+    this.left,
+    this.right,
+    this.width,
+    this.height,
+    this.boxColor = Colors.white,
+    this.textColor = Colors.black,
+    this.fontSize = 16,
+    this.textStyle,
+    this.textDirection = TextDirection.ltr,
+    this.borderColor = Colors.transparent,
+  });
+
+  @override
+  State<CustomDropdownBox> createState() => _CustomDropdownBoxState();
+}
+
+class _CustomDropdownBoxState extends State<CustomDropdownBox> {
+  String? currentValue;
+
+  @override
+  void initState() {
+    super.initState();
+    currentValue = widget.selectedValue;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.topRight, // Adjust as needed
+      child: Container(
+        width: widget.width,
+        height: widget.height,
+        margin: EdgeInsets.only(
+          top: widget.top ?? 0,
+          bottom: widget.bottom ?? 0,
+          left: widget.left ?? 0,
+          right: widget.right ?? 0,
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 0),
+        decoration: BoxDecoration(
+          color: widget.boxColor,
+          borderRadius: BorderRadius.circular(13),
+          border: Border.all(
+            color: widget.borderColor,
+            width: 2,
+          ),
+        ),
+        child: DropdownButtonHideUnderline(
+          child: DropdownButton2<String>(
+            isExpanded: true,
+            value: currentValue,
+            dropdownDecoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(21),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black26,
+                  blurRadius: 10,
+                  offset: Offset(0, 4),
+                ),
+              ],
+            ),
+            icon: Padding(
+              padding: const EdgeInsets.only(left: 8.0),
+              child: Icon(
+                Icons.arrow_drop_down_rounded,
+                size: 40,
+                color: Colors.black,
+              ),
+            ),
+            iconEnabledColor: Colors.black,
+            style: TextStyle(
+              fontSize: widget.fontSize,
+              color: widget.textColor,
+            ),
+            onChanged: (value) {
+              setState(() {
+                currentValue = value;
+              });
+              widget.onChanged(value);
+            },
+            items: widget.items.map((String item) {
+              return DropdownMenuItem<String>(
+                value: item,
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: Text(
+                    item,
+                    textDirection: TextDirection.rtl,
+                    textAlign: TextAlign.right,
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
+
+
+
+
+
+
 
 
 
 
 enum IconPosition { left, right }
-
-
 
 class CustomPasswordTextBox extends StatefulWidget {
   final double? top;
@@ -525,11 +775,8 @@ class _CustomPasswordTextBoxState extends State<CustomPasswordTextBox> {
 
   @override
   Widget build(BuildContext context) {
-    final effectiveTextStyle = widget.textStyle ??
-        TextStyle(
-          fontSize: 16,
-          color: widget.textColor,
-        );
+    final effectiveTextStyle =
+        widget.textStyle ?? TextStyle(fontSize: 16, color: widget.textColor);
 
     final iconWidget = GestureDetector(
       onTap: () {
@@ -558,7 +805,10 @@ class _CustomPasswordTextBoxState extends State<CustomPasswordTextBox> {
         decoration: BoxDecoration(
           color: widget.boxColor,
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: widget.borderColor, width: widget.borderWidth),
+          border: Border.all(
+            color: widget.borderColor,
+            width: widget.borderWidth,
+          ),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.1),
@@ -614,10 +864,6 @@ class _CustomPasswordTextBoxState extends State<CustomPasswordTextBox> {
     );
   }
 }
-
-
-
-
 
 void navigateToNextPage(BuildContext context, Widget targetPage) {
   Navigator.of(context).pushReplacement(

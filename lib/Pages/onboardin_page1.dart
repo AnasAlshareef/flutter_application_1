@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'Custom_Widgets.dart';
-import 'onboardin_page2.dart';
+import 'Onboardin_page2.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class OnboardinPage1 extends StatefulWidget {

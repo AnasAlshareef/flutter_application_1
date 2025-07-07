@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'Custom_Widgets.dart';
 import 'Sign_up_Login_page.dart';
+import 'Main_page.dart';
 import '../DataBase/DataBase_Helper.dart'; // Make sure to import your Cubit
 import '../Auth/Auth_Cudit.dart'; // Make sure to import DatabaseHelper
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -53,16 +54,16 @@ class _SignInPageState extends State<SignInPage> {
 
   @override
   Widget build(BuildContext context) {
-   return BlocListener<AuthCubit, AuthState>(
-    listener: (context, state) {
-      if (state is AuthSuccess) {
-        navigateToNextPage(context, const SignUpLoginPage()); // or HomePage
-      } else if (state is AuthFailure) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(state.message), backgroundColor: Colors.red),
-        );
-      }
-    },
+    return BlocListener<AuthCubit, AuthState>(
+      listener: (context, state) {
+        if (state is AuthSuccess) {
+          navigateToNextPage(context, const MainPageWrapper()); // or HomePage
+        } else if (state is AuthFailure) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.message), backgroundColor: Colors.red),
+          );
+        }
+      },
       child: CustomScaffold(
         backgroundImagePath: 'assets/Sign in - Email.png',
         body: Stack(
@@ -147,10 +148,17 @@ class _SignInPageState extends State<SignInPage> {
                 authCubit.loginUser(email: email, password: password);
               },
               text: 'تسجيل الدخول',
-              alignment: const Alignment(0, 0.34),
-              padding: const EdgeInsets.symmetric(
-                horizontal: 21.0,
-                vertical: 0.0,
+              alignment: const Alignment(
+                0,
+                0.34,
+              ), // Controls button vertical placement
+              width: 310,
+              height: 60,
+              backgroundColor: const Color(0xFFB8FF01),
+              textStyle: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
               ),
             ),
           ],
