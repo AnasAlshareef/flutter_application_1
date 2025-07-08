@@ -38,7 +38,7 @@ class _SignUpLoginPageState extends State<SignUpLoginPage> {
 
           CustomButton(
             onPressed: () {
-              navigateToNextPage(context, SignInPageWrapper());
+              navigateToNextPage(context, SignInPage());
             },
             text: 'أستمر عن طريق البريد الألكتروني',
             alignment: const Alignment(0, 0.34),
@@ -105,7 +105,7 @@ class _SignUpLoginPageState extends State<SignUpLoginPage> {
                       recognizer:
                           TapGestureRecognizer()
                             ..onTap = () {
-                              navigateToNextPage(context, SignUpPageWrapper());
+                              navigateToNextPage(context, SignUpPage());
                             },
                     ),
                   ],

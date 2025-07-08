@@ -3,6 +3,7 @@ import 'package:crypto/crypto.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../DataBase/DataBase_Helper.dart'; // Adjust import path
 import '../DataBase/Models/User_Model.dart'; // Adjust import path
+import '../DataBase/Models/Transaction_Model.dart'; // Adjust import path
 import 'Auth_State.dart'; // Adjust import path
 import 'Credentials_Storge.dart'; // SaveCredentials, DeleteCredentials, SaveUserName
 
@@ -128,20 +129,68 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   Future<void> refreshUser() async {
-    final currentState = state;
-
-    if (currentState is AuthSuccess) {
-      final user = await _databaseHelper.getUserByEmail(
-        currentState.user.email,
-      );
-
-      if (user != null) {
-        emit(AuthSuccess(user)); // Update state with fresh user data
-      } else {
-        emit(AuthFailure('Failed to refresh user data.'));
-      }
+  final currentState = state;
+  if (currentState is AuthSuccess) {
+    final user = await _databaseHelper.getUserByEmail(currentState.user.email);
+    print('Refreshed user balance: ${user?.balance}');
+    if (user != null) {
+      emit(AuthSuccess(user));
+    } else {
+      emit(AuthFailure('Failed to refresh user data.'));
     }
   }
+}
+
+
+
+  
+  Future<void> addTransaction({
+  required String categoryName,
+  required double amount,
+  required String type, // 'income' or 'expense'
+  required String date, // Format: 'YYYY-MM-DD'
+}) async {
+  final currentUser = this.currentUser;
+
+  if (currentUser == null) {
+    emit(AuthFailure("User not logged in."));
+    return;
+  }
+
+  try {
+    // Get category ID from name
+    final categoryId =
+        await _databaseHelper.getCategoryIdByName(categoryName);
+
+    if (categoryId == null) {
+      emit(AuthFailure("Category '$categoryName' not found."));
+      return;
+    }
+
+    final txn = TransactionModel(
+      userId: currentUser.id!,
+      categoryId: categoryId,
+      amount: amount,
+      type: type,
+      date: date,
+    );
+
+    final insertedId = await _databaseHelper.insertTransaction(txn);
+
+    if (insertedId > 0) {
+      // Optionally refresh user balance here
+      await refreshUser();
+      //emit(AuthSuccess(currentUser)); // Emit updated user if needed
+    } else {
+      emit(AuthFailure("Failed to insert transaction."));
+    }
+  } catch (e) {
+    emit(AuthFailure("Add transaction error: ${e.toString()}"));
+  }
+}
+
+
+
 
   UserModel? get currentUser {
     final currentState = state;

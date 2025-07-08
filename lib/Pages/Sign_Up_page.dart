@@ -58,7 +58,7 @@ class _SignUpPageState extends State<SignUpPage> {
         return const ImagePopupOverlay(
           imagePath: 'assets/Create Email.png',
           titleText: 'تم انشاء حسابك بنجاح\n يمكنك الان تسجيل الدخول',
-          nextPage: MainPageWrapper(),
+          nextPage: MainPage(),
         );
       },
       transitionBuilder:

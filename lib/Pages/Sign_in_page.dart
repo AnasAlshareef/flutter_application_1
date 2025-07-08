@@ -16,7 +16,7 @@ class SignInPage extends StatefulWidget {
   State<SignInPage> createState() => _SignInPageState();
 }
 
-class SignInPageWrapper extends StatelessWidget {
+/*class SignInPageWrapper extends StatelessWidget {
   const SignInPageWrapper({super.key});
 
   @override
@@ -32,7 +32,7 @@ class SignInPageWrapper extends StatelessWidget {
       child: const SignInPage(),
     );
   }
-}
+}*/
 
 class _SignInPageState extends State<SignInPage> {
   final TextEditingController _emailController = TextEditingController();
@@ -57,7 +57,7 @@ class _SignInPageState extends State<SignInPage> {
     return BlocListener<AuthCubit, AuthState>(
       listener: (context, state) {
         if (state is AuthSuccess) {
-          navigateToNextPage(context, const MainPageWrapper()); // or HomePage
+          navigateToNextPage(context, const MainPage()); // or HomePage
         } else if (state is AuthFailure) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(state.message), backgroundColor: Colors.red),

@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/Pages/Sign_in_page.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'DataBase/DataBase_Helper.dart';
+import 'Auth/Auth_Cudit.dart';
+import 'Auth/Auth_State.dart';
+import 'Auth/Credentials_Storge.dart';
 import 'Pages/Backgroud_page.dart';
 import 'Pages/Onboardin_page1.dart';
 import 'Pages/Sign_Up_page.dart';
@@ -11,18 +15,26 @@ void main() {
   runApp(const MyApp());
 }
 
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner:  false,
-      home: MainPageWrapper() );
+    return BlocProvider(
+      create: (_) => AuthCubit(
+        DatabaseHelper(),
+        SaveCredentials(),
+        DeleteCredentials(),
+        SaveUserName(),
+      ),
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: SignInPage(), // or any initial screen
+      ),
+    );
   }
 }
+
 
 
 class MyPageViewScreen extends StatefulWidget {

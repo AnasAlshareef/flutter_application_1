@@ -510,7 +510,7 @@ class _CustomNumberTextBoxState extends State<CustomNumberTextBox> {
         padding: const EdgeInsets.symmetric(horizontal: 12),
         decoration: BoxDecoration(
           color: widget.boxColor,
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(13),
           border: Border.all(
             color: widget.borderColor,
             width: 2, // Default border width
@@ -605,6 +605,7 @@ class CustomDropdownBox extends StatefulWidget {
   State<CustomDropdownBox> createState() => _CustomDropdownBoxState();
 }
 
+
 class _CustomDropdownBoxState extends State<CustomDropdownBox> {
   String? currentValue;
 
@@ -617,7 +618,7 @@ class _CustomDropdownBoxState extends State<CustomDropdownBox> {
   @override
   Widget build(BuildContext context) {
     return Align(
-      alignment: Alignment.topRight, // Adjust as needed
+      alignment: Alignment.topRight,
       child: Container(
         width: widget.width,
         height: widget.height,
@@ -627,42 +628,43 @@ class _CustomDropdownBoxState extends State<CustomDropdownBox> {
           left: widget.left ?? 0,
           right: widget.right ?? 0,
         ),
-        padding: const EdgeInsets.symmetric(horizontal: 0),
         decoration: BoxDecoration(
           color: widget.boxColor,
           borderRadius: BorderRadius.circular(13),
-          border: Border.all(
-            color: widget.borderColor,
-            width: 2,
-          ),
+          border: Border.all(color: widget.borderColor, width: 2),
         ),
+        
         child: DropdownButtonHideUnderline(
           child: DropdownButton2<String>(
             isExpanded: true,
             value: currentValue,
-            dropdownDecoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(21),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black26,
-                  blurRadius: 10,
-                  offset: Offset(0, 4),
-                ),
-              ],
-            ),
-            icon: Padding(
-              padding: const EdgeInsets.only(left: 8.0),
-              child: Icon(
-                Icons.arrow_drop_down_rounded,
-                size: 40,
-                color: Colors.black,
-              ),
-            ),
-            iconEnabledColor: Colors.black,
             style: TextStyle(
               fontSize: widget.fontSize,
               color: widget.textColor,
+            ),
+            iconStyleData: IconStyleData(
+              icon: const Icon(
+                Icons.arrow_drop_down_sharp,
+                size: 30,  // smaller icon to reduce space
+                color: Colors.black,
+              ),
+            ),
+            dropdownStyleData: DropdownStyleData(
+              maxHeight: 200,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(15),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black,   
+                  ),
+                ],
+              ),
+            ),
+            buttonStyleData: ButtonStyleData(
+              height: widget.height,
+              width: widget.width,
+              padding: const EdgeInsets.symmetric(horizontal: 0),
             ),
             onChanged: (value) {
               setState(() {
@@ -675,10 +677,17 @@ class _CustomDropdownBoxState extends State<CustomDropdownBox> {
                 value: item,
                 child: Align(
                   alignment: Alignment.centerRight,
-                  child: Text(
-                    item,
-                    textDirection: TextDirection.rtl,
-                    textAlign: TextAlign.right,
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 0), // tighten text padding
+                    child: Text(
+                      item,
+                      textAlign: TextAlign.right,
+                      textDirection: TextDirection.rtl,
+                      style: TextStyle(
+                        fontSize: widget.fontSize,
+                        color: widget.textColor,
+                      ),
+                    ),
                   ),
                 ),
               );
@@ -689,14 +698,6 @@ class _CustomDropdownBoxState extends State<CustomDropdownBox> {
     );
   }
 }
-
-
-
-
-
-
-
-
 
 
 

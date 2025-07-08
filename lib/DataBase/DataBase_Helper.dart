@@ -7,7 +7,6 @@ import 'Models/User_Model.dart';
 import 'Models/Category_Model.dart';
 import 'Models/Transaction_Model.dart';
 
-
 class DatabaseHelper {
   static final DatabaseHelper _instance = DatabaseHelper._internal();
   factory DatabaseHelper() => _instance;
@@ -37,67 +36,78 @@ class DatabaseHelper {
     await db.execute('PRAGMA foreign_keys = ON');
   }
 
+  Future<void> createCategoryTable(Database db) async {
+    await db.execute('''
+    CREATE TABLE categories (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      category_name TEXT NOT NULL UNIQUE
+    )
+  ''');
+
+    await db.insert('categories', {'category_name': 'الطعام والشراب'});
+    await db.insert('categories', {'category_name': 'الإيجار أو السكن'});
+    await db.insert('categories', {'category_name': 'المواصلات'});
+    await db.insert('categories', {'category_name': 'الصحة'});
+    await db.insert('categories', {'category_name': 'المرتب الشهري'});
+    await db.insert('categories', {'category_name': 'استثمارات'});
+    await db.insert('categories', {'category_name': 'التسوق والملابس'});
+    await db.insert('categories', {'category_name': 'أخرى'});
+  }
+
   Future<void> _onCreate(Database db, int version) async {
-   
     await db.execute('''
-      CREATE TABLE users (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        username TEXT UNIQUE NOT NULL,
-        password_hash TEXT NOT NULL,
-        email TEXT UNIQUE NOT NULL,
-        balance REAL NOT NULL DEFAULT 0,
-        created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-      )
-    ''');
-    await db.execute('''
-      CREATE TABLE categories (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL UNIQUE,
-        type TEXT NOT NULL CHECK (type IN ('income', 'expense'))
-      )
-    ''');
+    CREATE TABLE users (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      username TEXT UNIQUE NOT NULL,
+      password_hash TEXT NOT NULL,
+      email TEXT UNIQUE NOT NULL,
+      balance REAL NOT NULL DEFAULT 0,
+      created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+    )
+  ''');
+
+    await createCategoryTable(db);
 
     await db.execute('''
-      CREATE TABLE transactions (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        user_id INTEGER NOT NULL,
-        category_id INTEGER NOT NULL,
-        amount REAL NOT NULL,
-        type TEXT NOT NULL CHECK (type IN ('income', 'expense')),
-        date TEXT NOT NULL,
-        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-        FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE RESTRICT
-      )
-    ''');
+    CREATE TABLE transactions (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER NOT NULL,
+      category_id INTEGER NOT NULL,
+      amount REAL NOT NULL,
+      type TEXT NOT NULL CHECK (type IN ('income', 'expense')),
+      date TEXT NOT NULL,
+      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+      FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE RESTRICT
+    )
+  ''');
 
     await db.execute('''
-      CREATE TRIGGER update_user_balance_after_insert
-      AFTER INSERT ON transactions
-      FOR EACH ROW
-      BEGIN
-        UPDATE users
-        SET balance = balance + CASE 
-          WHEN NEW.type = 'income' THEN NEW.amount
-          WHEN NEW.type = 'expense' THEN -NEW.amount
-          ELSE 0
-        END
-        WHERE id = NEW.user_id;
-      END;
-    ''');
+    CREATE TRIGGER update_user_balance_after_insert
+     AFTER INSERT ON transactions
+     FOR EACH ROW
+     BEGIN
+    UPDATE users
+     SET balance = balance + CASE 
+     WHEN NEW.type = 'income' THEN NEW.amount
+     WHEN NEW.type = 'expense' THEN -NEW.amount
+     ELSE 0
+    END
+     WHERE id = NEW.user_id;
+    END;
+  ''');
   }
 
   // -------- Validation --------
 
   void _validateEmail(String? email) {
-  if (email == null || email.isEmpty) {
-    throw ArgumentError('Email cannot be null or empty.');
+    if (email == null || email.isEmpty) {
+      throw ArgumentError('Email cannot be null or empty.');
+    }
+    final regex = RegExp(r'^[\w\.-]+@[\w\.-]+\.\w+$');
+    if (!regex.hasMatch(email)) {
+      throw ArgumentError('Invalid email format.');
+    }
   }
-  final regex = RegExp(r'^[\w\.-]+@[\w\.-]+\.\w+$');
-  if (!regex.hasMatch(email)) {
-    throw ArgumentError('Invalid email format.');
-  }
-}
-
 
   void _validateType(String type) {
     if (type != 'income' && type != 'expense') {
@@ -169,38 +179,48 @@ class DatabaseHelper {
 
   // -------- Category Methods --------
 
-  Future<int> insertCategory(CategoryModel category) async {
-    _validateType(category.type);
-    if (category.name.isEmpty) throw ArgumentError('Category name cannot be empty.');
-    final db = await database;
-    return await db.insert('categories', category.toMap());
-  }
-
-  Future<List<CategoryModel>> getCategoriesByType(String type) async {
-    _validateType(type);
-    final db = await database;
-    final result = await db.query(
-      'categories',
-      where: 'type = ?',
-      whereArgs: [type],
-    );
-    return result.map((e) => CategoryModel.fromMap(e)).toList();
-  }
-
   Future<List<CategoryModel>> getAllCategories() async {
     final db = await database;
     final result = await db.query('categories');
     return result.map((e) => CategoryModel.fromMap(e)).toList();
   }
 
-  // -------- Transaction Methods --------
+  Future<bool> categoryExistsByName(String categoryName) async {
+    final db = await database;
+    final result = await db.query(
+      'categories',
+      where: 'category_name = ?',
+      whereArgs: [categoryName],
+      limit: 1,
+    );
+    return result.isNotEmpty;
+  }
 
+  Future<int?> getCategoryIdByName(String categoryName) async {
+    final db = await database;
+    final result = await db.query(
+      'categories',
+      columns: ['id'],
+      where: 'category_name = ?',
+      whereArgs: [categoryName],
+      limit: 1,
+    );
+    if (result.isNotEmpty) {
+      return result.first['id'] as int;
+    } else {
+      return null; // Category name not found
+    }
+  }
+
+  // -------- Transaction Methods --------
   Future<int> insertTransaction(TransactionModel txn) async {
     _validateUserId(txn.userId);
     _validateType(txn.type);
     _validateDate(txn.date);
     _validateAmount(txn.amount);
+
     final db = await database;
+
     return await db.insert('transactions', txn.toMap());
   }
 
@@ -210,7 +230,11 @@ class DatabaseHelper {
     return result.map((e) => TransactionModel.fromMap(e)).toList();
   }
 
-  Future<double> getTotalAmountByDate(int userId, String type, String date) async {
+  Future<double> getTotalAmountByDate(
+    int userId,
+    String type,
+    String date,
+  ) async {
     _validateUserId(userId);
     _validateType(type);
     _validateDate(date);
@@ -227,7 +251,10 @@ class DatabaseHelper {
         : 0.0;
   }
 
-  Future<List<Map<String, dynamic>>> getExpenseByCategoryForDate(int userId, String date) async {
+  Future<List<Map<String, dynamic>>> getExpenseByCategoryForDate(
+    int userId,
+    String date,
+  ) async {
     _validateUserId(userId);
     _validateDate(date);
     final db = await database;
@@ -251,4 +278,3 @@ class DatabaseHelper {
     _database = null;
   }
 }
-
