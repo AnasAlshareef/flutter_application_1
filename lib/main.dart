@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
       ),
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: SignUpLoginPage(), // or any initial screen
+        home: MyPageViewScreen(), // or any initial screen
       ),
     );
   }

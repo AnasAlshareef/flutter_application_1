@@ -23,8 +23,6 @@ class _OnboardinPage1State extends State<OnboardinPage1> {
             decoration: const BoxDecoration(color: Color(0xFF6026E2)),
           ),
 
-         
-
           FlexibleTextBlock(
             title: 'مرحبا بكم\nفي تطبيق\nمحفظتي',
             subtitle:
@@ -44,11 +42,11 @@ class _OnboardinPage1State extends State<OnboardinPage1> {
               navigateToNextPage(context, OnboardinPage2());
             },
             text: 'استمرار',
+            textStyle: GoogleFonts.almarai(fontSize: 20, color: Colors.black),
             alignment: Alignment.bottomCenter,
-            padding: const EdgeInsets.symmetric(
-              horizontal: 27.0,
-              vertical: 35.0,
-            ),
+            margin: const EdgeInsets.only(bottom: 20),
+            width: 300,
+            height: 60,
           ),
         ],
       ),

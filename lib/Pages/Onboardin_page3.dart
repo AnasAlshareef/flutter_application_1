@@ -47,11 +47,12 @@ class _OnboardinPage3State extends State<OnboardinPage3> {
               navigateToNextPage(context, SignUpLoginPage());
             },
             text: 'استمرار',
+            textStyle: GoogleFonts.almarai(fontSize: 20, color: Colors.black),
             alignment: Alignment.bottomCenter,
-            padding: const EdgeInsets.symmetric(
-              horizontal: 27.0,
-              vertical: 35.0,
-            ),
+            margin: const EdgeInsets.only(bottom: 20),
+            width: 300,
+            height: 60,
+          
           ),
         ],
       ),
