@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Auth/Auth_State.dart';
-import 'package:flutter_application_1/Auth/Credentials_Storge.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'Custom_Widgets.dart';
 import 'Sign_up_Login_page.dart';
 import 'Main_page.dart';
-import '../DataBase/DataBase_Helper.dart'; // Make sure to import your Cubit
 import '../Auth/Auth_Cudit.dart'; // Make sure to import DatabaseHelper
 
 class SignUpPage extends StatefulWidget {
@@ -15,24 +13,6 @@ class SignUpPage extends StatefulWidget {
 
   @override
   State<SignUpPage> createState() => _SignUpPageState();
-}
-
-class SignUpPageWrapper extends StatelessWidget {
-  const SignUpPageWrapper({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create:
-          (_) => AuthCubit(
-            DatabaseHelper(),
-            SaveCredentials(),
-            DeleteCredentials(),
-            SaveUserName(),
-          ),
-      child: const SignUpPage(),
-    );
-  }
 }
 
 class _SignUpPageState extends State<SignUpPage> {
@@ -47,39 +27,26 @@ class _SignUpPageState extends State<SignUpPage> {
     });
   }
 
-  void _showSuccessPopup() {
-    showGeneralDialog(
-      context: context,
-      barrierDismissible: false,
-      barrierLabel: 'ImagePopup',
-      barrierColor: Colors.transparent,
-      transitionDuration: const Duration(milliseconds: 300),
-      pageBuilder: (_, __, ___) {
-        return const ImagePopupOverlay(
-          imagePath: 'assets/Create Email.png',
-          titleText: 'تم انشاء حسابك بنجاح\n يمكنك الان تسجيل الدخول',
-          nextPage: MainPage(),
-        );
-      },
-      transitionBuilder:
-          (_, anim, __, child) => FadeTransition(opacity: anim, child: child),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return BlocListener<AuthCubit, AuthState>(
       listener: (context, state) {
         if (state is AuthSuccess) {
-          _showSuccessPopup();
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('تم تسجيل الدخول بنجاح'),
+              backgroundColor: Colors.green,
+              duration: Duration(seconds: 1),
+            ),
+          );
+          // Delay navigation by 2 seconds (optional)
+          Future.delayed(const Duration(seconds: 1), () {
+            navigateToNextPage(context, const MainPage());
+          });
         } else if (state is AuthFailure) {
           ScaffoldMessenger.of(
             context,
           ).showSnackBar(SnackBar(content: Text(state.message)));
-        } else if (state is RegistrationSuccess) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(const SnackBar(content: Text('تم التسجيل بنجاح')));
         }
       },
       child: CustomScaffold(
@@ -206,68 +173,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 color: Colors.black87,
               ),
             ),
-          
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class ImagePopupOverlay extends StatelessWidget {
-  final String imagePath;
-  final String titleText;
-  final Widget nextPage;
-  final double width;
-  final double height;
-
-  const ImagePopupOverlay({
-    super.key,
-    required this.imagePath,
-    required this.titleText,
-    required this.nextPage,
-    this.width = 280,
-    this.height = 300,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: Center(
-        child: Container(
-          width: width,
-          height: height,
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage(imagePath),
-              fit: BoxFit.cover,
-            ),
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Stack(
-            children: [
-              FlexibleTextBlock(
-                title: titleText,
-                titleFontSize: 17,
-                titleFont: GoogleFonts.almarai,
-                titleColor: Colors.black87,
-                alignment: Alignment.topCenter,
-                padding: const EdgeInsets.only(top: 150, right: 9),
-              ),
-              CustomButton(
-                onPressed: () {
-                  navigateToNextPage(context, nextPage);
-                },
-                text: 'الاستمرار',
-                alignment: const Alignment(0, 0.91),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 26.0,
-                  vertical: 0.0,
-                ),
-              ),
-            ],
-          ),
         ),
       ),
     );

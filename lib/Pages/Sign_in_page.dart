@@ -3,11 +3,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'Custom_Widgets.dart';
 import 'Sign_up_Login_page.dart';
 import 'Main_page.dart';
-import '../DataBase/DataBase_Helper.dart'; // Make sure to import your Cubit
 import '../Auth/Auth_Cudit.dart'; // Make sure to import DatabaseHelper
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_application_1/Auth/Auth_State.dart';
-import 'package:flutter_application_1/Auth/Credentials_Storge.dart';
+
 
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
@@ -16,23 +15,6 @@ class SignInPage extends StatefulWidget {
   State<SignInPage> createState() => _SignInPageState();
 }
 
-/*class SignInPageWrapper extends StatelessWidget {
-  const SignInPageWrapper({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create:
-          (_) => AuthCubit(
-            DatabaseHelper(),
-            SaveCredentials(),
-            DeleteCredentials(),
-            SaveUserName(),
-          ),
-      child: const SignInPage(),
-    );
-  }
-}*/
 
 class _SignInPageState extends State<SignInPage> {
   final TextEditingController _emailController = TextEditingController();

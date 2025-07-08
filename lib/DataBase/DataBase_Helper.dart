@@ -40,18 +40,18 @@ class DatabaseHelper {
     await db.execute('''
     CREATE TABLE categories (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      category_name TEXT NOT NULL UNIQUE
+      name TEXT NOT NULL UNIQUE
     )
   ''');
 
-    await db.insert('categories', {'category_name': 'الطعام والشراب'});
-    await db.insert('categories', {'category_name': 'الإيجار أو السكن'});
-    await db.insert('categories', {'category_name': 'المواصلات'});
-    await db.insert('categories', {'category_name': 'الصحة'});
-    await db.insert('categories', {'category_name': 'المرتب الشهري'});
-    await db.insert('categories', {'category_name': 'استثمارات'});
-    await db.insert('categories', {'category_name': 'التسوق والملابس'});
-    await db.insert('categories', {'category_name': 'أخرى'});
+    await db.insert('categories', {'name': 'الطعام والشراب'});
+    await db.insert('categories', {'name': 'الإيجار أو السكن'});
+    await db.insert('categories', {'name': 'المواصلات'});
+    await db.insert('categories', {'name': 'الصحة'});
+    await db.insert('categories', {'name': 'المرتب الشهري'});
+    await db.insert('categories', {'name': 'استثمارات'});
+    await db.insert('categories', {'name': 'التسوق والملابس'});
+    await db.insert('categories', {'name': 'أخرى'});
   }
 
   Future<void> _onCreate(Database db, int version) async {
@@ -157,7 +157,9 @@ class DatabaseHelper {
       where: 'email = ?',
       whereArgs: [email],
     );
-    return result.isNotEmpty ? UserModel.fromMap(result.first) : null;
+    final user = result.isNotEmpty ? UserModel.fromMap(result.first) : null;
+    print('User fetched by email: $user'); // Debug print
+    return user;
   }
 
   Future<UserModel?> getUserByUsername(String username) async {
@@ -189,7 +191,7 @@ class DatabaseHelper {
     final db = await database;
     final result = await db.query(
       'categories',
-      where: 'category_name = ?',
+      where: 'name = ?',
       whereArgs: [categoryName],
       limit: 1,
     );
@@ -201,7 +203,7 @@ class DatabaseHelper {
     final result = await db.query(
       'categories',
       columns: ['id'],
-      where: 'category_name = ?',
+      where: 'name = ?',
       whereArgs: [categoryName],
       limit: 1,
     );
@@ -250,25 +252,49 @@ class DatabaseHelper {
         ? (result.first['total'] as num).toDouble()
         : 0.0;
   }
+Future<List<Map<String, dynamic>>> getExpensesByCategoryForPeriod({
+  required int userId,
+  required String period,
+}) async {
+  _validateUserId(userId);
 
-  Future<List<Map<String, dynamic>>> getExpenseByCategoryForDate(
-    int userId,
-    String date,
-  ) async {
-    _validateUserId(userId);
-    _validateDate(date);
-    final db = await database;
-    return await db.rawQuery(
-      '''
-      SELECT c.name, SUM(t.amount) as total
-      FROM transactions t
-      JOIN categories c ON t.category_id = c.id
-      WHERE t.user_id = ? AND t.type = 'expense' AND t.date = ?
-      GROUP BY t.category_id
-      ''',
-      [userId, date],
-    );
+  final db = await database;
+  final now = DateTime.now();
+  late DateTime startDate;
+
+  switch (period) {
+    case 'daily':
+      startDate = DateTime(now.year, now.month, now.day);
+      break;
+    case 'weekly':
+      startDate = now.subtract(const Duration(days: 6));
+      break;
+    case 'monthly':
+      startDate = now.subtract(const Duration(days: 29));
+      break;
+    case 'yearly':
+      startDate = now.subtract(const Duration(days: 364));
+      break;
+    default:
+      throw ArgumentError('Invalid period: $period');
   }
+
+  final startDateStr = startDate.toIso8601String();
+
+  return await db.rawQuery(
+    '''
+    SELECT c.name AS name, SUM(t.amount) as total
+    FROM transactions t
+    JOIN categories c ON t.category_id = c.id
+    WHERE t.user_id = ? 
+      AND t.type = 'expense' 
+      AND datetime(t.date) >= datetime(?)
+    GROUP BY t.category_id
+    ''',
+    [userId, startDateStr],
+  );
+}
+ 
 
   // -------- Close DB --------
 

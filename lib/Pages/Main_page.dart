@@ -1,13 +1,10 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../Auth/Auth_Cudit.dart';
 import '../Auth/Auth_State.dart';
-import '../Auth/Credentials_Storge.dart';
-import '../DataBase/DataBase_Helper.dart';
 import 'Custom_Widgets.dart';
-import 'Sign_up_Login_page.dart';
+import 'PieChart.dart';
 
 class MainPageWrapper extends StatelessWidget {
   const MainPageWrapper({super.key});
@@ -29,7 +26,6 @@ class MainPage extends StatelessWidget {
           backgroundImagePath: 'assets/Home screen.png',
           body: Stack(
             children: [
-              
               Container(height: 35, color: const Color(0xFF6026E2)),
 
               // Balance display using BlocBuilder
@@ -39,12 +35,12 @@ class MainPage extends StatelessWidget {
                   subtitle: state.user.balance.toString(),
                   padding: const EdgeInsets.only(
                     right: 17.0,
-                    top: 270.0,
-                    left: 2.0,
+                    top: 280.0,
+                    left: 122.0,
                   ),
-                  titleFontSize: 10,
+                  titleFontSize: 17,
                   titleFont: GoogleFonts.cairo,
-                  subtitleFontSize: 10,
+                  subtitleFontSize: 15,
                   subtitleFont: GoogleFonts.almarai,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   textAlign: TextAlign.center,
@@ -73,25 +69,38 @@ class MainPage extends StatelessWidget {
                 height: 60,
                 backgroundColor: const Color.fromARGB(255, 113, 244, 118),
               ),
-
-              // Expense Button
               CustomButton(
                 onPressed: () {
-                  showImagePopup(
-                    context,
-                    [
-                      'الطعام والشراب',
-                      'الإيجار أو السكن',
-                      'المواصلات',
-                      'الصحة',
-                      'التسوق والملابس',
-                      'أخرى',
-                    ],
-                    const Color(0xFFCF0000),
-                    const Color.fromARGB(255, 255, 0, 0),
-                    'assets/expense.png',
-                    'expense',
-                  );
+                  if (state is AuthSuccess) {
+                    showImagePopup(
+                      context,
+                      [
+                        'الطعام والشراب',
+                        'الإيجار أو السكن',
+                        'المواصلات',
+                        'الصحة',
+                        'التسوق والملابس',
+                        'أخرى',
+                      ],
+                      const Color(0xFFCF0000),
+                      const Color.fromARGB(255, 255, 0, 0),
+                      'assets/expense.png',
+                      'expense',
+                      currentBalance:
+                          state.user.balance, // safe because of the check
+                    );
+                  } else {
+                    // Optionally show message if user is not authenticated or loading
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          'لم يتم تحميل بيانات المستخدم بعد',
+                          textAlign: TextAlign.center,
+                        ),
+                        duration: Duration(seconds: 2),
+                      ),
+                    );
+                  }
                 },
                 text: 'اضافة المصروفات',
                 alignment: Alignment.centerRight,
@@ -100,6 +109,17 @@ class MainPage extends StatelessWidget {
                 height: 60,
                 backgroundColor: const Color.fromARGB(255, 247, 104, 94),
               ),
+              if (state is AuthSuccess)
+                // Balance display and other elements
+                Positioned(
+                  top: 330,
+                  left: 20,
+                  right: 20,
+                  child: ExpensePieChart(
+                    period:
+                        'daily', // Change to 'weekly', 'monthly', or 'yearly'
+                  ),
+                ),
             ],
           ),
         );
@@ -114,8 +134,9 @@ void showImagePopup(
   Color dropdownBorderColor,
   Color buttonColor,
   String imagePath,
-  String type,
-) {
+  String type, {
+  double? currentBalance, // optional parameter
+}) {
   showDialog(
     context: context,
     barrierColor: Colors.black54,
@@ -127,11 +148,55 @@ void showImagePopup(
         BorderColor: dropdownBorderColor,
         dropdownOptions: dropdownOptions,
         buttonColor: buttonColor,
-        onContinue: (selectedCategory, amount) async {
+        onContinue: (selectedCategory, amountText) async {
+          final amount = parseToDouble(amountText);
+
+          if (amount == 0.0) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text(
+                  'القيمة يجب أن تكون أكبر من صفر',
+                  textAlign: TextAlign.center,
+                ),
+                duration: Duration(seconds: 2),
+              ),
+            );
+            return;
+          }
+
+          // Check for expense type and balance
+          if (type == 'expense') {
+            if (currentBalance == null || currentBalance <= 0) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text(
+                    'الرصيد الحالي صفر ولا يمكنك إضافة مصروفات',
+                    textAlign: TextAlign.center,
+                  ),
+                  duration: Duration(seconds: 2),
+                ),
+              );
+              return;
+            }
+
+            if (amount > currentBalance) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    'المصروف لا يمكن أن يكون أكبر من الرصيد الحالي ($currentBalance)',
+                    textAlign: TextAlign.center,
+                  ),
+                  duration: const Duration(seconds: 2),
+                ),
+              );
+              return;
+            }
+          }
+
           final authCubit = context.read<AuthCubit>();
           await authCubit.addTransaction(
             categoryName: selectedCategory,
-            amount: parseToDouble(amount),
+            amount: amount,
             type: type,
             date: DateTime.now().toIso8601String().split('T').first,
           );
@@ -239,7 +304,8 @@ class _ImagePopupOverlayState extends State<ImagePopupOverlay> {
               ),
               CustomButton(
                 onPressed: () {
-                  if (numberController.text.trim().isEmpty || selectedOption.isEmpty) {
+                  if (numberController.text.trim().isEmpty ||
+                      selectedOption.isEmpty) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text(

@@ -129,68 +129,65 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   Future<void> refreshUser() async {
-  final currentState = state;
-  if (currentState is AuthSuccess) {
-    final user = await _databaseHelper.getUserByEmail(currentState.user.email);
-    print('Refreshed user balance: ${user?.balance}');
-    if (user != null) {
-      emit(AuthSuccess(user));
-    } else {
-      emit(AuthFailure('Failed to refresh user data.'));
+    final currentState = state;
+    if (currentState is AuthSuccess) {
+      final user = await _databaseHelper.getUserByEmail(
+        currentState.user.email,
+      );
+      print('Refreshed user balance: ${user?.balance}');
+      if (user != null) {
+        emit(AuthSuccess(user));
+      } else {
+        emit(AuthFailure('Failed to refresh user data.'));
+      }
     }
   }
-}
 
-
-
-  
   Future<void> addTransaction({
-  required String categoryName,
-  required double amount,
-  required String type, // 'income' or 'expense'
-  required String date, // Format: 'YYYY-MM-DD'
-}) async {
-  final currentUser = this.currentUser;
+    required String categoryName,
+    required double amount,
+    required String type,
+    required String date,
+  }) async {
+    final currentUser = this.currentUser;
 
-  if (currentUser == null) {
-    emit(AuthFailure("User not logged in."));
-    return;
-  }
-
-  try {
-    // Get category ID from name
-    final categoryId =
-        await _databaseHelper.getCategoryIdByName(categoryName);
-
-    if (categoryId == null) {
-      emit(AuthFailure("Category '$categoryName' not found."));
+    if (currentUser == null) {
+      emit(AuthFailure("User not logged in."));
       return;
     }
 
-    final txn = TransactionModel(
-      userId: currentUser.id!,
-      categoryId: categoryId,
-      amount: amount,
-      type: type,
-      date: date,
-    );
+    try {
+      // Get category ID from name
+      final categoryId = await _databaseHelper.getCategoryIdByName(
+        categoryName,
+      );
 
-    final insertedId = await _databaseHelper.insertTransaction(txn);
+      if (categoryId == null) {
+        emit(AuthFailure("Category '$categoryName' not found."));
+        return;
+      }
 
-    if (insertedId > 0) {
-      // Optionally refresh user balance here
-      await refreshUser();
-      //emit(AuthSuccess(currentUser)); // Emit updated user if needed
-    } else {
-      emit(AuthFailure("Failed to insert transaction."));
+      final txn = TransactionModel(
+        userId: currentUser.id!,
+        categoryId: categoryId,
+        amount: amount,
+        type: type,
+        date: date,
+      );
+
+      final insertedId = await _databaseHelper.insertTransaction(txn);
+
+      if (insertedId > 0) {
+        await refreshUser(); // Refresh user balance
+        print('Transaction added. Refreshing user balance.'); // Debug print
+      } else {
+        emit(AuthFailure("Failed to insert transaction."));
+      }
+    } catch (e) {
+      emit(AuthFailure("Add transaction error: ${e.toString()}"));
+      print('Error adding transaction: ${e.toString()}'); // Debug print
     }
-  } catch (e) {
-    emit(AuthFailure("Add transaction error: ${e.toString()}"));
   }
-}
-
-
-
 
   UserModel? get currentUser {
     final currentState = state;
@@ -199,5 +196,31 @@ class AuthCubit extends Cubit<AuthState> {
     }
     return null;
   }
-  
+
+  Future<List<Map<String, dynamic>>> fetchExpenseDataForPeriod(
+    String period,
+  ) async {
+    final user = currentUser;
+
+    if (user == null || user.id == null) {
+      emit(AuthFailure("User not logged in."));
+      return [];
+    }
+
+    try {
+      final expenseData = await _databaseHelper.getExpensesByCategoryForPeriod(
+        userId: user.id!,
+        period: period,
+      );
+      return expenseData;
+    } catch (e) {
+      emit(AuthFailure("Failed to fetch expense data: ${e.toString()}"));
+      return [];
+    }
+  }
+
+
+
+
+
 }
