@@ -55,7 +55,7 @@ class MainPage extends StatelessWidget {
                 onPressed: () {
                   showImagePopup(
                     context,
-                    ['المرتب الشهري', 'اسثمارات'],
+                    ['المرتب الشهري', 'استثمارات'],
                     const Color(0xFF00AB06),
                     const Color.fromARGB(255, 0, 204, 7),
                     'assets/income.png',
