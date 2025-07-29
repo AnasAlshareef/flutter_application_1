@@ -50,130 +50,147 @@ class _SignUpPageState extends State<SignUpPage> {
         }
       },
       child: CustomScaffold(
-        backgroundImagePath: 'assets/Sign Up - Email.png',
-        body: Stack(
-          children: [
-            Container(height: 35, color: const Color(0xFF6026E2)),
-
-            // Title and subtitle
-            FlexibleTextBlock(
-              title: 'انشاء حساب',
-              subtitle: 'يرجى ادخال بياناتك لانشاء حساب جديد',
-              padding: const EdgeInsets.only(right: 0.0, top: 94.0, left: 23.0),
-              titleFontSize: 31,
-              titleFont: GoogleFonts.almarai,
-              subtitleFontSize: 18,
-              subtitleFont: GoogleFonts.almarai,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              textAlign: TextAlign.right,
-              titleColor: const Color(0xFF6026E2),
-              subtitleColor: const Color(0xFF6026E2),
-            ),
-            // Back arrow
-            PositionedArrowButton(
-              top: 47,
-              right: 17,
-              onTap: () {
+        backgroundImagePath: 'assets/Sign in - Email.png',
+        appBar: AppBar(
+          backgroundColor: const Color(0xFFB8FF01),
+          elevation: 0,
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.arrow_forward, color: Color(0xFF6026E2)),
+              onPressed: () {
                 navigateToNextPage(context, const SignUpLoginPage());
               },
-              iconSize: 30,
-              color: const Color(0xFF6026E2),
-            ),
-            // UI elements remain same...
-            CustomUsernameTextBox(
-              top: 256,
-              left: 20,
-              right: 20,
-              controller: _usernameController,
-              boxColor: Colors.white,
-              height: 58,
-              textColor: Colors.black87,
-              fontSize: 16,
-              textStyle: GoogleFonts.almarai(),
-            ),
-            CustomEmailTextBox(
-              top: 328,
-              left: 20,
-              right: 20,
-              controller: _emailController,
-              boxColor: Colors.white,
-              height: 58,
-              textColor: Colors.black87,
-              fontSize: 16,
-              textStyle: GoogleFonts.almarai(),
-            ),
-            CustomPasswordTextBox(
-              top: 401,
-              left: 20,
-              controller: _passwordController,
-              initialObscure: _obscurePassword,
-              onToggleVisibility: _togglePasswordVisibility,
-              width: 320,
-              height: 58,
-              boxColor: Colors.white,
-              iconPosition: IconPosition.left,
-              iconColor: Colors.deepPurple,
-              textStyle: GoogleFonts.almarai(
-                fontSize: 16,
-                color: Colors.black87,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            // Google button stays dummy
-            CustomButton(
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text(
-                      'هذه الميزة غير متوفرة حاليا',
-                      textAlign: TextAlign.center,
-                    ),
-                    duration: Duration(seconds: 2),
-                    behavior: SnackBarBehavior.floating,
-                    backgroundColor: Colors.black87,
-                  ),
-                );
-              },
-              text: 'Google',
-              icon: const FaIcon(
-                FontAwesomeIcons.google,
-                color: Color(0xFF4285F4),
-                size: 24,
-              ),
-              alignment: const Alignment(0, 0.67),
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              height: 60,
-              width: 310,
-              backgroundColor: Colors.white,
-              textStyle: GoogleFonts.almarai(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.black87,
-              ),
-            ),
-
-            // Register button using AuthCubit
-            CustomButton(
-              onPressed: () {
-                final cubit = context.read<AuthCubit>();
-                cubit.registerUser(
-                  username: _usernameController.text.trim(),
-                  email: _emailController.text.trim(),
-                  password: _passwordController.text.trim(),
-                );
-              },
-              text: 'إنشاء حساب',
-              alignment: const Alignment(0, 0.36), // Vertical positioning
-              height: 55,
-              width: 310, // You can adjust or remove for full width
-              backgroundColor: const Color(0xFFB8FF01),
-              textStyle: GoogleFonts.almarai(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.black87,
-              ),
             ),
           ],
+        ),
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 30.0),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                const SizedBox(height: 30),
+                FlexibleTextBlock(
+                  title: 'انشاء حساب',
+                  subtitle: 'يرجى ادخال بياناتك لانشاء حساب جديد',
+                  titleFontSize: 31,
+                  titleFont: GoogleFonts.almarai,
+                  subtitleFontSize: 18,
+                  subtitleFont: GoogleFonts.almarai,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  titleColor: const Color(0xFF6026E2),
+                  subtitleColor: const Color(0xFF6026E2),
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.15),
+                CustomUsernameTextBox(
+                  controller: _usernameController,
+                  boxColor: Colors.white,
+                  height: 58,
+                  textColor: Colors.black87,
+                  fontSize: 16,
+                  textStyle: GoogleFonts.almarai(),
+                ),
+                const SizedBox(height: 12),
+                CustomEmailTextBox(
+                  controller: _emailController,
+                  boxColor: Colors.white,
+                  height: 58,
+                  textColor: Colors.black87,
+                  fontSize: 16,
+                  textStyle: GoogleFonts.almarai(),
+                ),
+                const SizedBox(height: 12),
+                CustomPasswordTextBox(
+                  controller: _passwordController,
+                  initialObscure: _obscurePassword,
+                  onToggleVisibility: _togglePasswordVisibility,
+                  height: 58,
+                  boxColor: Colors.white,
+                  iconPosition: IconPosition.left,
+                  iconColor: Colors.deepPurple,
+                  textStyle: GoogleFonts.almarai(
+                    fontSize: 16,
+                    color: Colors.black87,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                CustomButton(
+                  onPressed: () {
+                    final cubit = context.read<AuthCubit>();
+                    cubit.registerUser(
+                      username: _usernameController.text.trim(),
+                      email: _emailController.text.trim(),
+                      password: _passwordController.text.trim(),
+                    );
+                  },
+                  text: 'إنشاء حساب',
+                  alignment: const Alignment(0, 0.36), // Vertical positioning
+                  height: 55,
+                  backgroundColor: const Color(0xFFB8FF01),
+                  textStyle: GoogleFonts.almarai(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Container(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        height: 1,
+                        color: Colors.white,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Text(
+                        'أو باستخدام',
+                        style: GoogleFonts.almarai(
+                          fontSize: 14,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                    Expanded(child: Container(height: 1, color: Colors.white)),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                CustomButton(
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          'هذه الميزة غير متوفرة حاليا',
+                          textAlign: TextAlign.center,
+                        ),
+                        duration: Duration(seconds: 2),
+                        behavior: SnackBarBehavior.floating,
+                        backgroundColor: Colors.black87,
+                      ),
+                    );
+                  },
+                  text: 'Google',
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  height: 60,
+                  icon: const FaIcon(
+                    FontAwesomeIcons.google,
+                    color: Color(0xFF4285F4),
+                    size: 24,
+                  ),
+                  backgroundColor: Colors.white,
+                  textStyle: GoogleFonts.almarai(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );

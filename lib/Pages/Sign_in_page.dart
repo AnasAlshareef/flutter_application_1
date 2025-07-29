@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/Pages/Sign_up_Login_page.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'Custom_Widgets.dart';
-import 'Sign_up_Login_page.dart';
 import 'Main_page.dart';
 import '../Auth/Auth_Cudit.dart'; // Make sure to import DatabaseHelper
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_application_1/Auth/Auth_State.dart';
-
 
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
@@ -14,7 +14,6 @@ class SignInPage extends StatefulWidget {
   @override
   State<SignInPage> createState() => _SignInPageState();
 }
-
 
 class _SignInPageState extends State<SignInPage> {
   final TextEditingController _emailController = TextEditingController();
@@ -48,102 +47,152 @@ class _SignInPageState extends State<SignInPage> {
       },
       child: CustomScaffold(
         backgroundImagePath: 'assets/Sign in - Email.png',
-        body: Stack(
-          children: [
-            // Top bar
-            Container(
-              height: 35,
-              decoration: const BoxDecoration(color: Color(0xFF6026E2)),
-            ),
-
-            // Title and subtitle
-            FlexibleTextBlock(
-              title: 'تسجيل الدخول',
-              subtitle: 'الرجاء ادخال البريد الالكتروني ورمز المرور الخاص بك',
-              padding: const EdgeInsets.only(right: 20.0, top: 90.0, left: 8.0),
-              titleFontSize: 31,
-              titleFont: GoogleFonts.almarai,
-              subtitleFontSize: 18,
-              subtitleFont: GoogleFonts.almarai,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              textAlign: TextAlign.right,
-              titleColor: const Color(0xFF6026E2),
-              subtitleColor: const Color(0xFF6026E2),
-            ),
-
-            // Back arrow
-            PositionedArrowButton(
-              top: 47,
-              right: 17,
-              onTap: () {
+        appBar: AppBar(
+          backgroundColor: const Color(0xFFB8FF01),
+          elevation: 0,
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.arrow_forward, color: Color(0xFF6026E2)),
+              onPressed: () {
                 navigateToNextPage(context, const SignUpLoginPage());
               },
-              iconSize: 30,
-              color: const Color(0xFF6026E2),
-            ),
-
-            // Email field
-            CustomEmailTextBox(
-              top: 290,
-              left: 20,
-              right: 20,
-              boxColor: Colors.white,
-              height: 58,
-              controller: _emailController,
-              textColor: Colors.black87,
-              fontSize: 16,
-              textStyle: GoogleFonts.almarai(),
-            ),
-
-            // Password field
-            CustomPasswordTextBox(
-              top: 370,
-              left: 20,
-              controller: _passwordController,
-              initialObscure: _obscurePassword,
-              iconPosition: IconPosition.left,
-              onToggleVisibility: _togglePasswordVisibility,
-              width: 320,
-              height: 58,
-              boxColor: Colors.white,
-              iconColor: Colors.deepPurple,
-              textStyle: GoogleFonts.almarai(
-                fontSize: 16,
-                color: Colors.black87,
-                fontWeight: FontWeight.w500,
-              ),
-              hintAlignment: Alignment.topRight,
-              hintPadding: const EdgeInsets.only(right: 32, top: 14),
-              inputTextAlign: TextAlign.left,
-              inputPadding: const EdgeInsets.symmetric(
-                vertical: 20,
-                horizontal: 0,
-              ),
-            ),
-
-            CustomButton(
-              onPressed: () {
-                final email = _emailController.text.trim();
-                final password = _passwordController.text;
-
-                final authCubit = context.read<AuthCubit>();
-                authCubit.loginUser(email: email, password: password);
-              },
-              text: 'تسجيل الدخول',
-              alignment: const Alignment(
-                0,
-                0.34,
-              ), // Controls button vertical placement
-              width: 310,
-              height: 60,
-              backgroundColor: const Color(0xFFB8FF01),
-              textStyle: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-              ),
             ),
           ],
+        ),
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 30.0),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                const SizedBox(height: 30),
+                FlexibleTextBlock(
+                  title: 'تسجيل الدخول',
+                  subtitle:
+                      'الرجاء ادخال البريد الالكتروني ورمز المرور الخاص بك',
+                  titleFontSize: 24,
+                  titleFont: GoogleFonts.almarai,
+                  subtitleFontSize: 14,
+                  subtitleFont: GoogleFonts.almarai,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  titleColor: const Color(0xFF6026E2),
+                  subtitleColor: const Color(0xFF6026E2),
+                ),
+
+                SizedBox(height: MediaQuery.of(context).size.height * 0.16),
+
+                CustomEmailTextBox(
+                  boxColor: Colors.white,
+                  height: 58,
+                  controller: _emailController,
+                  textColor: Colors.black87,
+                  fontSize: 16,
+                  textStyle: GoogleFonts.almarai(),
+                ),
+
+                SizedBox(height: 20),
+
+                CustomPasswordTextBox(
+                  controller: _passwordController,
+                  initialObscure: _obscurePassword,
+                  iconPosition: IconPosition.left,
+                  height: 58,
+                  onToggleVisibility: _togglePasswordVisibility,
+                  boxColor: Colors.white,
+                  iconColor: Colors.deepPurple,
+                  textStyle: GoogleFonts.almarai(
+                    fontSize: 16,
+                    color: Colors.black87,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  hintAlignment: Alignment.topRight,
+                  hintPadding: const EdgeInsets.only(right: 32, top: 14),
+                  inputTextAlign: TextAlign.left,
+                  inputPadding: const EdgeInsets.symmetric(
+                    vertical: 20,
+                    horizontal: 0,
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
+                CustomButton(
+                  onPressed: () {
+                    final email = _emailController.text.trim();
+                    final password = _passwordController.text;
+
+                    final authCubit = context.read<AuthCubit>();
+                    authCubit.loginUser(email: email, password: password);
+                  },
+                  text: 'تسجيل الدخول',
+                  alignment: const Alignment(
+                    0,
+                    0.34,
+                  ), // Controls button vertical placement
+                  height: 60,
+                  backgroundColor: const Color(0xFFB8FF01),
+                  textStyle: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Container(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        height: 1,
+                        color: Colors.white,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Text(
+                        'أو باستخدام',
+                        style: GoogleFonts.almarai(
+                          fontSize: 14,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                    Expanded(child: Container(height: 1, color: Colors.white)),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                CustomButton(
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          'هذه الميزة غير متوفرة حاليا',
+                          textAlign: TextAlign.center,
+                        ),
+                        duration: Duration(seconds: 2),
+                        behavior: SnackBarBehavior.floating,
+                        backgroundColor: Colors.black87,
+                      ),
+                    );
+                  },
+                  text: 'Google',
+                  height: 60,
+                  icon: const FaIcon(
+                    FontAwesomeIcons.google,
+                    color: Color(0xFF4285F4),
+                    size: 24,
+                  ),
+                  backgroundColor: Colors.white,
+                  textStyle: GoogleFonts.almarai(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );

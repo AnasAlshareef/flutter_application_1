@@ -60,7 +60,7 @@ class CustomButton extends StatelessWidget {
     this.alignment = Alignment.center,
     this.margin = EdgeInsets.zero,
     this.padding = const EdgeInsets.symmetric(horizontal: 16),
-    this.width,
+    this.width = double.infinity,
     this.height = 50,
     this.icon,
     this.backgroundColor,
@@ -160,50 +160,32 @@ class FlexibleTextBlock extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final content = Align(
-      alignment: alignment ?? Alignment.topLeft,
-      child: Padding(
-        padding: padding ?? EdgeInsets.zero,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: crossAxisAlignment,
-          children: [
-            Text(
-              title,
-              style: titleFont().copyWith(
-                fontSize: titleFontSize,
-                fontWeight: FontWeight.bold,
-                color: titleColor,
-              ),
-              textAlign: textAlign ?? TextAlign.right, // Use passed or default
-            ),
-            if (subtitle != null) ...[
-              const SizedBox(height: 30),
-              Text(
-                subtitle!,
-                style: (subtitleFont ?? GoogleFonts.almarai)().copyWith(
-                  fontSize: subtitleFontSize ?? 18,
-                  color: subtitleColor,
-                ),
-                textAlign: textAlign ?? TextAlign.right, // Same here
-              ),
-            ],
-          ],
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: crossAxisAlignment,
+      children: [
+        Text(
+          title,
+          style: titleFont().copyWith(
+            fontSize: titleFontSize,
+            fontWeight: FontWeight.bold,
+            color: titleColor,
+          ),
+          textAlign: TextAlign.center,
         ),
-      ),
+        if (subtitle != null) ...[
+          const SizedBox(height: 30),
+          Text(
+            subtitle!,
+            style: (subtitleFont ?? GoogleFonts.almarai)().copyWith(
+              fontSize: subtitleFontSize ?? 18,
+              color: subtitleColor,
+            ),
+            textAlign: textAlign ?? TextAlign.right, // Same here
+          ),
+        ],
+      ],
     );
-
-    if (top != null || bottom != null || left != null || right != null) {
-      return Positioned(
-        top: top,
-        bottom: bottom,
-        left: left,
-        right: right,
-        child: content,
-      );
-    }
-
-    return content;
   }
 }
 
@@ -291,53 +273,31 @@ class _CustomEmailTextBoxState extends State<CustomEmailTextBox> {
 
   @override
   Widget build(BuildContext context) {
-    return Positioned(
-      top: widget.top,
-      bottom: widget.bottom,
-      left: widget.left,
-      right: widget.right,
-      child: Container(
-        width: widget.width,
-        height: widget.height,
-        padding: const EdgeInsets.symmetric(horizontal: 12),
-        decoration: BoxDecoration(
-          color: widget.boxColor,
-          borderRadius: BorderRadius.circular(10),
+    return Container(
+      width: widget.width,
+      height: widget.height,
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      decoration: BoxDecoration(
+        color: widget.boxColor,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: TextField(
+        controller: widget.controller,
+        keyboardType: TextInputType.emailAddress,
+        textAlign: TextAlign.end,
+        textDirection: TextDirection.rtl,
+
+        decoration: const InputDecoration(
+          border: InputBorder.none,
+          hintText: 'البريد الإلكتروني',
+          contentPadding: EdgeInsets.symmetric(
+            vertical: 12,
+            horizontal: 0, // avoid negative padding
+          ),
         ),
-        child: Stack(
-          children: [
-            // Custom hint text (only visible when input is empty)
-            if (widget.controller.text.isEmpty)
-              Positioned(
-                right: 4,
-                top: 12,
-                child: Text(
-                  'البريد الإلكتروني',
-                  style: (widget.textStyle ?? const TextStyle()).copyWith(
-                    fontSize: widget.fontSize,
-                    color: Colors.grey,
-                  ),
-                  textDirection: TextDirection.rtl,
-                ),
-              ),
-            TextField(
-              controller: widget.controller,
-              keyboardType: TextInputType.emailAddress,
-              textAlign: TextAlign.left,
-              decoration: const InputDecoration(
-                border: InputBorder.none,
-                hintText: '',
-                contentPadding: EdgeInsets.symmetric(
-                  vertical: 12,
-                  horizontal: 0, // avoid negative padding
-                ),
-              ),
-              style: (widget.textStyle ?? const TextStyle()).copyWith(
-                fontSize: widget.fontSize,
-                color: widget.textColor,
-              ),
-            ),
-          ],
+        style: (widget.textStyle ?? const TextStyle()).copyWith(
+          fontSize: widget.fontSize,
+          color: widget.textColor,
         ),
       ),
     );
@@ -393,53 +353,30 @@ class _CustomUsernameTextBoxState extends State<CustomUsernameTextBox> {
 
   @override
   Widget build(BuildContext context) {
-    return Positioned(
-      top: widget.top,
-      bottom: widget.bottom,
-      left: widget.left,
-      right: widget.right,
-      child: Container(
-        width: widget.width,
-        height: widget.height,
-        padding: const EdgeInsets.symmetric(horizontal: 12),
-        decoration: BoxDecoration(
-          color: widget.boxColor,
-          borderRadius: BorderRadius.circular(10),
+    return Container(
+      width: widget.width,
+      height: widget.height,
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      decoration: BoxDecoration(
+        color: widget.boxColor,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: TextField(
+        controller: widget.controller,
+        keyboardType: TextInputType.name,
+        textAlign: TextAlign.right,
+        textDirection: TextDirection.rtl,
+        decoration: const InputDecoration(
+          border: InputBorder.none,
+          hintText: 'الأسم الكامل',
+          contentPadding: EdgeInsets.symmetric(
+            vertical: 12,
+            horizontal: 0,
+          ),
         ),
-        child: Stack(
-          children: [
-            // Custom hint text (only visible when input is empty)
-            if (widget.controller.text.isEmpty)
-              Positioned(
-                right: 4,
-                top: 12,
-                child: Text(
-                  'الأسم الكامل',
-                  style: (widget.textStyle ?? const TextStyle()).copyWith(
-                    fontSize: widget.fontSize,
-                    color: Colors.grey,
-                  ),
-                  textDirection: TextDirection.rtl,
-                ),
-              ),
-            TextField(
-              controller: widget.controller,
-              keyboardType: TextInputType.name,
-              textAlign: TextAlign.left,
-              decoration: const InputDecoration(
-                border: InputBorder.none,
-                hintText: '',
-                contentPadding: EdgeInsets.symmetric(
-                  vertical: 12,
-                  horizontal: 0,
-                ),
-              ),
-              style: (widget.textStyle ?? const TextStyle()).copyWith(
-                fontSize: widget.fontSize,
-                color: widget.textColor,
-              ),
-            ),
-          ],
+        style: (widget.textStyle ?? const TextStyle()).copyWith(
+          fontSize: widget.fontSize,
+          color: widget.textColor,
         ),
       ),
     );
@@ -605,7 +542,6 @@ class CustomDropdownBox extends StatefulWidget {
   State<CustomDropdownBox> createState() => _CustomDropdownBoxState();
 }
 
-
 class _CustomDropdownBoxState extends State<CustomDropdownBox> {
   String? currentValue;
 
@@ -633,7 +569,7 @@ class _CustomDropdownBoxState extends State<CustomDropdownBox> {
           borderRadius: BorderRadius.circular(13),
           border: Border.all(color: widget.borderColor, width: 2),
         ),
-        
+
         child: DropdownButtonHideUnderline(
           child: DropdownButton2<String>(
             isExpanded: true,
@@ -645,7 +581,7 @@ class _CustomDropdownBoxState extends State<CustomDropdownBox> {
             iconStyleData: IconStyleData(
               icon: const Icon(
                 Icons.arrow_drop_down_sharp,
-                size: 30,  // smaller icon to reduce space
+                size: 30, // smaller icon to reduce space
                 color: Colors.black,
               ),
             ),
@@ -654,11 +590,7 @@ class _CustomDropdownBoxState extends State<CustomDropdownBox> {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(15),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black,   
-                  ),
-                ],
+                boxShadow: [BoxShadow(color: Colors.black)],
               ),
             ),
             buttonStyleData: ButtonStyleData(
@@ -672,35 +604,35 @@ class _CustomDropdownBoxState extends State<CustomDropdownBox> {
               });
               widget.onChanged(value);
             },
-            items: widget.items.map((String item) {
-              return DropdownMenuItem<String>(
-                value: item,
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 0), // tighten text padding
-                    child: Text(
-                      item,
-                      textAlign: TextAlign.right,
-                      textDirection: TextDirection.rtl,
-                      style: TextStyle(
-                        fontSize: widget.fontSize,
-                        color: widget.textColor,
+            items:
+                widget.items.map((String item) {
+                  return DropdownMenuItem<String>(
+                    value: item,
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                          right: 0,
+                        ), // tighten text padding
+                        child: Text(
+                          item,
+                          textAlign: TextAlign.right,
+                          textDirection: TextDirection.rtl,
+                          style: TextStyle(
+                            fontSize: widget.fontSize,
+                            color: widget.textColor,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ),
-              );
-            }).toList(),
+                  );
+                }).toList(),
           ),
         ),
       ),
     );
   }
 }
-
-
-
 
 enum IconPosition { left, right }
 
@@ -742,7 +674,7 @@ class CustomPasswordTextBox extends StatefulWidget {
     this.boxColor = Colors.white,
     this.textColor = Colors.black,
     this.height = 50,
-    this.width = 300,
+    this.width = double.infinity,
     this.visibleIcon = Icons.visibility,
     this.hiddenIcon = Icons.visibility_off,
     this.iconSize = 24,
@@ -794,73 +726,39 @@ class _CustomPasswordTextBoxState extends State<CustomPasswordTextBox> {
       ),
     );
 
-    return Positioned(
-      top: widget.top,
-      bottom: widget.bottom,
-      left: widget.left,
-      right: widget.right,
-      child: Container(
-        height: widget.height,
-        width: widget.width,
-        padding: const EdgeInsets.symmetric(horizontal: 12),
-        decoration: BoxDecoration(
-          color: widget.boxColor,
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(
-            color: widget.borderColor,
-            width: widget.borderWidth,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 4,
-              offset: const Offset(0, 2),
-            ),
-          ],
+    return Container(
+      height: widget.height,
+      width: widget.width,
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      decoration: BoxDecoration(
+
+        color: widget.boxColor,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+          color: widget.borderColor,
+          width: widget.borderWidth,
         ),
-        child: Directionality(
-          textDirection: widget.textDirection,
-          child: Stack(
-            alignment: Alignment.centerRight,
-            children: [
-              if (widget.controller.text.isEmpty)
-                Positioned.fill(
-                  child: Padding(
-                    padding: widget.hintPadding,
-                    child: Align(
-                      alignment: widget.hintAlignment,
-                      child: Text(
-                        widget.hintText,
-                        style: effectiveTextStyle.copyWith(color: Colors.grey),
-                        textAlign: TextAlign.right,
-                      ),
-                    ),
-                  ),
-                ),
-              Row(
-                children: [
-                  if (widget.iconPosition == IconPosition.left) iconWidget,
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: TextField(
-                      controller: widget.controller,
-                      obscureText: _obscureText,
-                      textAlign: widget.inputTextAlign,
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        hintText: '',
-                        contentPadding: widget.inputPadding,
-                      ),
-                      style: effectiveTextStyle,
-                      cursorColor: widget.iconColor,
-                    ),
-                  ),
-                  if (widget.iconPosition == IconPosition.right) iconWidget,
-                ],
-              ),
-            ],
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
           ),
+        ],
+      ),
+      child: TextField(
+        controller: widget.controller,
+        obscureText: _obscureText,
+        textAlign: TextAlign.right,
+        textDirection: TextDirection.rtl,
+        decoration: InputDecoration(
+          border: InputBorder.none,
+          hintText: 'كلمة المرور',
+          prefixIcon: iconWidget,
+          contentPadding: widget.inputPadding,
         ),
+        style: effectiveTextStyle,
+        cursorColor: widget.iconColor,
       ),
     );
   }

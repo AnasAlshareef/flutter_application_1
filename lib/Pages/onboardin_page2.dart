@@ -15,43 +15,39 @@ class _OnboardinPage2State extends State<OnboardinPage2> {
   Widget build(BuildContext context) {
     return CustomScaffold(
       backgroundImagePath: 'assets/Onboardin_screen 2.png',
-      body: Stack(
-        children: [
-          // Top purple bar
-          Container(
-            height: 35,
-            decoration: const BoxDecoration(color: Color(0xFF6026E2)),
-          ),
-
-         
-          FlexibleTextBlock(
-            title: 'ادخر اموالك',
-            subtitle:
-                'وفر أموالك بسهولة من خلال ميزة الادخار الذكي حدد هدفك المالي وسيتتبع التطبيق تقدمك تلقائيًا راقب تطور مدخراتك أسبوعيًا وشهريًا بخطط مرنة وواقعية',
-            padding: const EdgeInsets.only(right: 17.0, top: 360.0, left: 13.0),
-            titleFontSize: 33,
-            titleFont: GoogleFonts.cairo,
-            subtitleFontSize: 18,
-            subtitleFont: GoogleFonts.almarai,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            textAlign: TextAlign.right,
-          ),
-
-          // Bottom button using CustomContinueButton
-          CustomButton(
-            onPressed: () {
-              navigateToNextPage(context, OnboardinPage3());
-            },
-            text: 'استمرار',
-            textStyle: GoogleFonts.almarai(fontSize: 20, color: Colors.black),
-            alignment: Alignment.bottomCenter,
-            margin: const EdgeInsets.only(bottom: 20),
-            width: 300,
-            height: 60,
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: Column(
+          children: [
+            SizedBox(height: MediaQuery.of(context).size.height * 0.45),
+        
+            FlexibleTextBlock(
+              title: 'ادخر اموالك',
+              subtitle:
+                  'وفر أموالك بسهولة من خلال ميزة الادخار الذكي حدد هدفك المالي وسيتتبع التطبيق تقدمك تلقائيًا راقب تطور مدخراتك أسبوعيًا وشهريًا بخطط مرنة وواقعية',
+              padding: const EdgeInsets.only(right: 17.0, top: 360.0, left: 13.0),
+              titleFontSize: 33,
+              titleFont: GoogleFonts.cairo,
+              subtitleFontSize: 18,
+              subtitleFont: GoogleFonts.almarai,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              textAlign: TextAlign.right,
             ),
-          
-    
-        ],
+        
+            const Spacer(),
+            CustomButton(
+              onPressed: () {
+                navigateToNextPage(context, OnboardinPage3());
+              },
+              text: 'استمرار',
+              textStyle: GoogleFonts.almarai(fontSize: 20, color: Colors.black),
+              alignment: Alignment.bottomCenter,
+              margin: const EdgeInsets.only(bottom: 20),
+              width: 300,
+              height: 60,
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -15,46 +15,37 @@ class _OnboardinPage3State extends State<OnboardinPage3> {
   Widget build(BuildContext context) {
     return CustomScaffold(
       backgroundImagePath: 'assets/Onboardin_screen 3.png',
-      body: Stack(
-        children: [
-          // Top bar (purple color)
-          Container(
-            height: 35,
-            decoration: const BoxDecoration(color: Color(0xFF6026E2)),
-          ),
-
-         
-
-
-          FlexibleTextBlock(
-            title: 'راقب حسابك',
-            subtitle:
-                'تابع حركة أموالك أولًا بأول من خلال ميزة تتبع حسابك سجّل كل مصروف أو مدخول بسهولة وبدون تعقيد احصل على نظرة شاملة حول وضعك المالي في أي وقت',
-            padding: const EdgeInsets.only(right: 17.0, top: 360.0, left: 5.0),
-            titleFontSize: 34,
-            titleFont: GoogleFonts.cairo,
-            subtitleFontSize: 18,
-            subtitleFont: GoogleFonts.almarai,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            textAlign: TextAlign.right,
-          ),
-
-
-
-          // Bottom button using CustomContinueButton
-          CustomButton(
-            onPressed: () {
-              navigateToNextPage(context, SignUpLoginPage());
-            },
-            text: 'استمرار',
-            textStyle: GoogleFonts.almarai(fontSize: 20, color: Colors.black),
-            alignment: Alignment.bottomCenter,
-            margin: const EdgeInsets.only(bottom: 20),
-            width: 300,
-            height: 60,
-          
-          ),
-        ],
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: Column(
+          children: [
+            SizedBox(height: MediaQuery.of(context).size.height * 0.45),
+            FlexibleTextBlock(
+              title: 'راقب حسابك',
+              subtitle:
+                  'تابع حركة أموالك أولًا بأول من خلال ميزة تتبع حسابك سجّل كل مصروف أو مدخول بسهولة وبدون تعقيد احصل على نظرة شاملة حول وضعك المالي في أي وقت',
+              padding: const EdgeInsets.only(right: 17.0, top: 360.0, left: 5.0),
+              titleFontSize: 34,
+              titleFont: GoogleFonts.cairo,
+              subtitleFontSize: 18,
+              subtitleFont: GoogleFonts.almarai,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              textAlign: TextAlign.right,
+            ),
+        
+            const Spacer(),
+            CustomButton(
+              onPressed: () {
+                navigateToNextPage(context, SignUpLoginPage());
+              },
+              text: 'استمرار',
+              textStyle: GoogleFonts.almarai(fontSize: 20, color: Colors.black),
+              alignment: Alignment.bottomCenter,
+              margin: const EdgeInsets.only(bottom: 20),
+              height: 60,
+            ),
+          ],
+        ),
       ),
     );
   }
