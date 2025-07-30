@@ -23,104 +23,229 @@ class MainPage extends StatelessWidget {
     return BlocBuilder<AuthCubit, AuthState>(
       builder: (context, state) {
         return CustomScaffold(
-          backgroundImagePath: 'assets/Home screen.png',
-          body: Stack(
-            children: [
-              Container(height: 35, color: const Color(0xFF6026E2)),
-
-              // Balance display using BlocBuilder
-              if (state is AuthSuccess)
-                FlexibleTextBlock(
-                  title: 'قيمة حسابك ',
-                  subtitle: state.user.balance.toString(),
-                  padding: const EdgeInsets.only(
-                    right: 17.0,
-                    top: 280.0,
-                    left: 122.0,
-                  ),
-                  titleFontSize: 17,
-                  titleFont: GoogleFonts.cairo,
-                  subtitleFontSize: 15,
-                  subtitleFont: GoogleFonts.almarai,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  textAlign: TextAlign.center,
-                  titleColor: Colors.black54,
-                  subtitleColor: Colors.black54,
-                )
-              else
-                const Text('لم يتم تحميل الرصيد'),
-
-              // Income Button
-              CustomButton(
-                onPressed: () {
-                  showImagePopup(
-                    context,
-                    ['المرتب الشهري', 'استثمارات'],
-                    const Color(0xFF00AB06),
-                    const Color.fromARGB(255, 0, 204, 7),
-                    'assets/income.png',
-                    'income',
-                  );
-                },
-                text: 'اضافة الايرادات',
-                alignment: Alignment.centerLeft,
-                margin: const EdgeInsets.only(bottom: 290, left: 20),
-                width: 156,
-                height: 60,
-                backgroundColor: const Color.fromARGB(255, 113, 244, 118),
-              ),
-              CustomButton(
-                onPressed: () {
-                  if (state is AuthSuccess) {
-                    showImagePopup(
-                      context,
-                      [
-                        'الطعام والشراب',
-                        'الإيجار أو السكن',
-                        'المواصلات',
-                        'الصحة',
-                        'التسوق والملابس',
-                        'أخرى',
-                      ],
-                      const Color(0xFFCF0000),
-                      const Color.fromARGB(255, 255, 0, 0),
-                      'assets/expense.png',
-                      'expense',
-                      currentBalance:
-                          state.user.balance, // safe because of the check
-                    );
-                  } else {
-                    // Optionally show message if user is not authenticated or loading
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text(
-                          'لم يتم تحميل بيانات المستخدم بعد',
-                          textAlign: TextAlign.center,
+          appBar: AppBar(backgroundColor: Colors.transparent, elevation: 0),
+          backgroundImagePath: 'assets/home.jpg',
+          body: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 30.0),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 70),
+                  Row(
+                    children: [
+                      Flexible(
+                        child: InkWell(
+                          onTap: () {
+                            if (state is AuthSuccess) {
+                              showImagePopup(
+                                context,
+                                [
+                                  'الطعام والشراب',
+                                  'الإيجار أو السكن',
+                                  'المواصلات',
+                                  'الصحة',
+                                  'التسوق والملابس',
+                                  'أخرى',
+                                ],
+                                const Color(0xFFCF0000),
+                                const Color.fromARGB(255, 255, 0, 0),
+                                'assets/expense.png',
+                                'expense',
+                                currentBalance:
+                                    state
+                                        .user
+                                        .balance, // safe because of the check
+                              );
+                            } else {
+                              // Optionally show message if user is not authenticated or loading
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                    'لم يتم تحميل بيانات المستخدم بعد',
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  duration: Duration(seconds: 2),
+                                ),
+                              );
+                            }
+                          },
+                          child: Container(
+                            width: 159,
+                            height: 100,
+                            padding: const EdgeInsets.only(
+                              left: 10,
+                              right: 10,
+                              top: 10,
+                              bottom: 20,
+                            ),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              image: DecorationImage(
+                                image: const AssetImage('assets/Red Box.png'),
+                                fit: BoxFit.fill,
+                              ),
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text(
+                                  '         إضافة\nالمصروفات',
+                                  style: GoogleFonts.cairo(
+                                    fontSize: 12,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  'اضف ما صرفته\n                    اليوم',
+                                  style: GoogleFonts.almarai(
+                                    fontSize: 10,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
-                        duration: Duration(seconds: 2),
                       ),
-                    );
-                  }
-                },
-                text: 'اضافة المصروفات',
-                alignment: Alignment.centerRight,
-                margin: const EdgeInsets.only(bottom: 290, right: 20),
-                width: 159,
-                height: 60,
-                backgroundColor: const Color.fromARGB(255, 247, 104, 94),
-              ),
-              if (state is AuthSuccess)
-                // Balance display and other elements
-                Positioned(
-                  top: 330,
-                  left: 20,
-                  right: 20,
-                  child: ExpensePieChart(
-                    period:
-                        'daily', // Change to 'weekly', 'monthly', or 'yearly'
+                      const SizedBox(width: 15),
+                      Flexible(
+                        child: InkWell(
+                          onTap:
+                              () => showImagePopup(
+                                context,
+                                ['المرتب الشهري', 'استثمارات'],
+                                const Color(0xFF00AB06),
+                                const Color.fromARGB(255, 0, 204, 7),
+                                'assets/income.png',
+                                'income',
+                              ),
+                          child: Container(
+                            width: 500,
+                            height: 100,
+                            padding: const EdgeInsets.only(
+                              left: 10,
+                              right: 10,
+                              top: 10,
+                              bottom: 10,
+                            ),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              image: DecorationImage(
+                                image: const AssetImage('assets/Green Box.png'),
+                                fit: BoxFit.fill,
+                              ),
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text(
+                                  '    إضافة\nالإيرادات',
+                                  style: GoogleFonts.cairo(
+                                    fontSize: 12,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(height: 5),
+                                Text(
+                                  'اضف ما اكتسبته \n                        اليوم',
+                                  style: GoogleFonts.almarai(
+                                    fontSize: 10,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-            ],
+                  const SizedBox(height: 40),
+                  if (state is AuthSuccess)
+                    Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black26,
+                            blurRadius: 10,
+                            offset: const Offset(0, 5),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(top: 10),
+                            child: FlexibleTextBlock(
+                              title: 'قيمة حسابك ',
+                              subtitle: "دل ${state.user.balance}",
+                              titleFontSize: 17,
+                              titleFont: GoogleFonts.cairo,
+                              subtitleFontSize: 15,
+                              subtitleFont: GoogleFonts.almarai,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              textAlign: TextAlign.center,
+                              titleColor: const Color(0xFF6026E2),
+                              subtitleColor: const Color(0xFF6026E2),
+                            ),
+                          ),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Image.asset(
+                              'assets/wallet-money 1.png',
+                              height: 60,
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  else
+                    const Text('لم يتم تحميل الرصيد'),
+
+                  const SizedBox(height: 20),
+                  if (state is AuthSuccess)
+                    Container(
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF6026E2),
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black26,
+                            blurRadius: 10,
+                            offset: const Offset(0, 5),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        children: [
+                          const SizedBox(height: 20),
+                          Text(
+                            "مخطط المصروفات",
+                            style: GoogleFonts.cairo(
+                              fontSize: 20,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          ExpensePieChart(
+                            period:
+                                'daily', // Change to 'weekly', 'monthly', or 'yearly'
+                          ),
+                          const SizedBox(height: 20),
+                        ],
+                      ),
+                    ),
+                ],
+              ),
+            ),
           ),
         );
       },

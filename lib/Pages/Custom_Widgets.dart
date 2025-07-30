@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/services.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
@@ -52,6 +53,7 @@ class CustomButton extends StatelessWidget {
   final Widget? icon;
   final Color? backgroundColor;
   final TextStyle? textStyle;
+  final String? image;
 
   const CustomButton({
     super.key,
@@ -65,6 +67,7 @@ class CustomButton extends StatelessWidget {
     this.icon,
     this.backgroundColor,
     this.textStyle,
+    this.image,
   });
 
   @override
@@ -75,6 +78,14 @@ class CustomButton extends StatelessWidget {
         margin: margin,
         width: width ?? double.infinity,
         height: height,
+        decoration: BoxDecoration(
+          image: image != null
+              ? DecorationImage(
+                  image: AssetImage(image!),
+                  fit: BoxFit.cover,
+                )
+              : null,
+        ),
         child: ElevatedButton(
           onPressed: onPressed,
           style: ElevatedButton.styleFrom(
@@ -94,11 +105,13 @@ class CustomButton extends StatelessWidget {
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
                           color: Colors.black,
+                          
                         ),
                   )
                   : Row(
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.center,
+                    
                     children: [
                       icon!,
                       const SizedBox(width: 10),
@@ -110,6 +123,7 @@ class CustomButton extends StatelessWidget {
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                               color: Colors.black,
+                              
                             ),
                       ),
                     ],
@@ -369,10 +383,7 @@ class _CustomUsernameTextBoxState extends State<CustomUsernameTextBox> {
         decoration: const InputDecoration(
           border: InputBorder.none,
           hintText: 'الأسم الكامل',
-          contentPadding: EdgeInsets.symmetric(
-            vertical: 12,
-            horizontal: 0,
-          ),
+          contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 0),
         ),
         style: (widget.textStyle ?? const TextStyle()).copyWith(
           fontSize: widget.fontSize,
@@ -731,7 +742,6 @@ class _CustomPasswordTextBoxState extends State<CustomPasswordTextBox> {
       width: widget.width,
       padding: const EdgeInsets.symmetric(horizontal: 12),
       decoration: BoxDecoration(
-
         color: widget.boxColor,
         borderRadius: BorderRadius.circular(10),
         border: Border.all(

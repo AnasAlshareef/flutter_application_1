@@ -99,14 +99,13 @@ class _ExpensePieChartState extends State<ExpensePieChart> {
     return BlocBuilder<AuthCubit, AuthState>(
       builder: (context, state) {
         if (state is AuthSuccess) {
-          _loadExpenseData(); // Reload data on state change
+          _loadExpenseData(); 
         }
         return Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const SizedBox(height: 18),
             SizedBox(
-              height: 340,
+              height: 250,
               child: PieChart(
                 PieChartData(
                   centerSpaceRadius: 50,
@@ -147,10 +146,11 @@ class _ExpensePieChartState extends State<ExpensePieChart> {
                 Padding(
                   padding: const EdgeInsets.only(top: 0),
                   child: Text(
-                    'LYD ${_expenseData[_touchedIndex!]['name']} - ${_expenseData[_touchedIndex!]['total']}',
+                    ' ${_expenseData[_touchedIndex!]['name']} - ${_expenseData[_touchedIndex!]['total']} دل',
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
+                      color: Colors.white
                     ),
                   ),
                 ),
