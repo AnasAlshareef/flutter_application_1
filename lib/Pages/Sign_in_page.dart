@@ -62,6 +62,7 @@ class _SignInPageState extends State<SignInPage> {
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30.0),
           child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
@@ -79,7 +80,7 @@ class _SignInPageState extends State<SignInPage> {
                   subtitleColor: const Color(0xFF6026E2),
                 ),
 
-                SizedBox(height: MediaQuery.of(context).size.height * 0.16),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.13),
 
                 CustomEmailTextBox(
                   boxColor: Colors.white,

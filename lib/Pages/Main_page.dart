@@ -23,15 +23,32 @@ class MainPage extends StatelessWidget {
     return BlocBuilder<AuthCubit, AuthState>(
       builder: (context, state) {
         return CustomScaffold(
-          appBar: AppBar(backgroundColor: Colors.transparent, elevation: 0),
-          backgroundImagePath: 'assets/home.jpg',
+          backgroundImagePath: 'assets/Home screen (1).png',
           body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 30.0),
             child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const SizedBox(height: 70),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.1),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Flexible(
+                        child: Image.asset('assets/First_Logo.jpg', height: 50),
+                      ),
+                      const SizedBox(width: 10),
+                      Flexible(
+                        child: Image.asset(
+                          'assets/Second_Logo.jpg',
+                          height: 50,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
                   Row(
                     children: [
                       Flexible(
@@ -71,14 +88,9 @@ class MainPage extends StatelessWidget {
                             }
                           },
                           child: Container(
-                            width: 159,
-                            height: 100,
-                            padding: const EdgeInsets.only(
-                              left: 10,
-                              right: 10,
-                              top: 10,
-                              bottom: 20,
-                            ),
+                            width: 170,
+                            height: 120,
+                            padding: const EdgeInsets.only(left: 10, right: 10),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
                               image: DecorationImage(
@@ -123,14 +135,9 @@ class MainPage extends StatelessWidget {
                                 'income',
                               ),
                           child: Container(
-                            width: 500,
-                            height: 100,
-                            padding: const EdgeInsets.only(
-                              left: 10,
-                              right: 10,
-                              top: 10,
-                              bottom: 10,
-                            ),
+                            width: 170,
+                            height: 120,
+                            padding: const EdgeInsets.only(left: 10, right: 10),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
                               image: DecorationImage(
@@ -165,7 +172,7 @@ class MainPage extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 40),
+                  const SizedBox(height: 20),
                   if (state is AuthSuccess)
                     Container(
                       width: double.infinity,
@@ -235,11 +242,48 @@ class MainPage extends StatelessWidget {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          ExpensePieChart(
-                            period:
-                                'daily', // Change to 'weekly', 'monthly', or 'yearly'
+                          DefaultTabController(
+                            length: 4,
+                            child: Column(
+                              children: [
+                                TabBar(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 20,
+                                  ),
+                                  labelColor: Colors.white,
+                                  unselectedLabelColor: Colors.white70,
+                                  labelStyle: GoogleFonts.almarai(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  indicatorColor: const Color(0xFFB8FF01),
+                                  indicatorWeight: 4,
+                                  indicatorAnimation:
+                                      TabIndicatorAnimation.linear,
+                                  indicatorSize: TabBarIndicatorSize.label,
+                                  dividerHeight: 4,
+                                  dividerColor: Colors.white60,
+                                  tabs: const [
+                                    Tab(text: 'سنوي'),
+                                    Tab(text: 'شهري'),
+                                    Tab(text: 'أسبوعي'),
+                                    Tab(text: 'يومي'),
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: 250,
+                                  child: TabBarView(
+                                    children: [
+                                      ExpensePieChart(period: 'yearly'),
+                                      ExpensePieChart(period: 'monthly'),
+                                      ExpensePieChart(period: 'weekly'),
+                                      ExpensePieChart(period: 'daily'),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                          const SizedBox(height: 20),
                         ],
                       ),
                     ),
@@ -288,8 +332,6 @@ void showImagePopup(
             );
             return;
           }
-
-          // Check for expense type and balance
           if (type == 'expense') {
             if (currentBalance == null || currentBalance <= 0) {
               ScaffoldMessenger.of(context).showSnackBar(

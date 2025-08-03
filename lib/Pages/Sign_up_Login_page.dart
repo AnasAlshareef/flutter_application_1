@@ -42,7 +42,7 @@ class _SignUpLoginPageState extends State<SignUpLoginPage> {
               height: 60,
               backgroundColor: const Color(0xFFB8FF01),
               textStyle: GoogleFonts.almarai(
-                fontSize: 17,
+                fontSize: 15,
                 fontWeight: FontWeight.bold,
                 color: Colors.black,
               ),

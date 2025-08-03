@@ -66,6 +66,7 @@ class _SignUpPageState extends State<SignUpPage> {
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30.0),
           child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
@@ -81,7 +82,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   titleColor: const Color(0xFF6026E2),
                   subtitleColor: const Color(0xFF6026E2),
                 ),
-                SizedBox(height: MediaQuery.of(context).size.height * 0.15),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.13),
                 CustomUsernameTextBox(
                   controller: _usernameController,
                   boxColor: Colors.white,
